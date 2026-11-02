@@ -5,279 +5,403 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Samsun Ustam – Samsun'un Ustaları Tek Yerde</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --g900:#0b3d24; --g800:#0f5132; --g700:#146c43; --g600:#198754; --g500:#22a565;
-  --g100:#e6f4ec; --g50:#f3faf6;
-  --accent:#f5b301; --ink:#1b2a22; --muted:#5f6f66; --line:#dfe9e3; --white:#fff;
-  --radius:14px; --shadow:0 6px 24px rgba(15,81,50,.10);
+  --g950:#06291a; --g900:#0b3d24; --g800:#0f5132; --g700:#146c43; --g600:#198754; --g500:#22a565; --g300:#8fdcb4;
+  --g100:#e3f3ea; --g50:#f2f9f5; --cream:#fbfaf5;
+  --accent:#f5b301; --coral:#ff6b4a; --ink:#14231b; --muted:#5c6c63; --line:#dde8e2; --white:#fff;
+  --r:18px; --shadow:0 10px 30px rgba(11,61,36,.10);
+  --head:"Bricolage Grotesque",Inter,system-ui,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--g50);line-height:1.5}
+body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--cream);line-height:1.5}
 a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
 .wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+h1,h2,h3{font-family:var(--head);letter-spacing:-.02em}
 
-/* Top bar */
-.topbar{background:var(--g900);color:#cfe8da;font-size:13px}
-.topbar .wrap{display:flex;justify-content:space-between;gap:12px;padding-top:7px;padding-bottom:7px}
 /* Header */
-header{background:var(--white);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
-header .wrap{display:flex;align-items:center;justify-content:space-between;height:70px;gap:16px}
-.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;color:var(--g800)}
-.logo .mark{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--g600),var(--g800));display:grid;place-items:center}
-.logo span b{color:var(--g500)}
-nav{display:flex;gap:26px;font-weight:500;color:var(--muted)}
+header{position:sticky;top:0;z-index:10;background:rgba(251,250,245,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--head);font-weight:800;font-size:22px;color:var(--g900)}
+.logo .mark{width:38px;height:38px;border-radius:12px 12px 12px 4px;background:var(--g700);display:grid;place-items:center}
+.logo b{color:var(--g500)}
+nav{display:flex;gap:28px;font-weight:500;color:var(--muted);font-size:15px}
 nav a:hover{color:var(--g700)}
-.hbtns{display:flex;gap:10px}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;font-weight:600;font-size:15px;border:0;cursor:pointer}
-.btn-ghost{color:var(--g700);border:1.5px solid var(--g600);background:transparent}
-.btn-main{background:var(--g600);color:#fff}
-.btn-main:hover{background:var(--g700)}
-.btn-accent{background:var(--accent);color:#2b2100}
+.hbtns{display:flex;gap:10px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:999px;font-weight:600;font-size:15px;white-space:nowrap}
+.btn-dark{background:var(--g900);color:#fff}
+.btn-dark:hover{background:var(--g700)}
+.btn-line{border:1.5px solid var(--g900);color:var(--g900)}
+.link{font-weight:600;color:var(--g900)}
 
 /* Hero */
-.hero{background:radial-gradient(1200px 400px at 85% 0%,#2bb673 0%,transparent 60%),linear-gradient(135deg,var(--g800),var(--g900));color:#fff;padding:64px 0 90px;position:relative;overflow:hidden}
-.hero h1{font-size:44px;line-height:1.15;font-weight:800;max-width:640px}
-.hero h1 em{font-style:normal;color:#8ff0bd}
-.hero p{margin-top:14px;color:#cfe8da;font-size:18px;max-width:560px}
-.search{margin-top:30px;background:#fff;border-radius:16px;padding:10px;display:grid;grid-template-columns:1.4fr 1fr auto;gap:10px;max-width:820px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
-.field{display:flex;align-items:center;gap:10px;padding:0 14px;border-radius:10px;background:var(--g50);color:var(--muted);min-height:52px}
-.field input,.field select{border:0;background:transparent;font:inherit;color:var(--ink);width:100%;outline:none}
-.search .btn{padding:0 28px;font-size:16px}
-.stats{display:flex;gap:40px;margin-top:34px;flex-wrap:wrap}
-.stats div b{display:block;font-size:28px}
-.stats div{color:#cfe8da;font-size:14px}
-.stats b{color:#fff}
+.hero{position:relative;padding:56px 0 120px;overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--g100);color:var(--g800);font-weight:600;font-size:13px;padding:6px 12px;border-radius:999px}
+.eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--g500);box-shadow:0 0 0 4px rgba(34,165,101,.2)}
+.hero h1{font-size:60px;line-height:1.02;font-weight:800;color:var(--g950);margin:18px 0 16px}
+.hero h1 .hl{color:var(--g600);position:relative}
+.hero h1 .hl:after{content:"";position:absolute;left:0;right:0;bottom:4px;height:12px;background:var(--accent);opacity:.35;z-index:-1;border-radius:4px}
+.hero p.lead{font-size:18px;color:var(--muted);max-width:520px}
+
+/* Sentence search */
+.ask{margin-top:28px;background:#fff;border:1.5px solid var(--line);border-radius:22px;padding:18px 20px;box-shadow:var(--shadow);max-width:600px}
+.ask .sent{font-family:var(--head);font-size:24px;font-weight:700;color:var(--g950);display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.ask select{font:inherit;color:var(--g600);border:0;border-bottom:3px dashed var(--g300);background:transparent;padding:0 4px;outline:none;cursor:pointer}
+.ask .row{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:12px;flex-wrap:wrap}
+.quick{display:flex;gap:6px;flex-wrap:wrap}
+.quick a{font-size:13px;padding:5px 11px;border-radius:999px;background:var(--g50);border:1px solid var(--line);color:var(--muted)}
+.quick a:hover{border-color:var(--g500);color:var(--g700)}
+
+/* Hero visual */
+.stage{position:relative;height:440px}
+.blob{position:absolute;inset:20px 0 0 30px;background:radial-gradient(circle at 30% 30%,var(--g500),var(--g800));border-radius:46% 54% 42% 58%/52% 44% 56% 48%}
+.float{position:absolute;background:#fff;border-radius:16px;box-shadow:0 18px 40px rgba(6,41,26,.18);padding:14px 16px}
+.f1{left:0;top:70px;width:270px}
+.f1 .top{display:flex;gap:12px;align-items:center}
+.av{width:48px;height:48px;border-radius:14px;background:var(--g100);color:var(--g700);display:grid;place-items:center;font-weight:800;font-family:var(--head);flex:none}
+.float small{color:var(--muted);font-size:12.5px;display:block}
+.f1 .tags{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.tag{font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--g100);color:var(--g700)}
+.tag.y{background:#fff3cc;color:#8a6200}
+.f2{right:0;top:210px;width:240px;display:flex;gap:10px;align-items:center}
+.f2 .dot{width:36px;height:36px;border-radius:50%;background:var(--g500);color:#fff;display:grid;place-items:center;flex:none}
+.f3{left:40px;bottom:10px;display:flex;align-items:center;gap:12px}
+.f3 b{font-family:var(--head);font-size:26px;color:var(--g800)}
+.wave{position:absolute;left:0;right:0;bottom:-1px;line-height:0}
+
+/* Emergency band */
+.sos{background:var(--g950);color:#fff;padding:26px 0}
+.sos .wrap{display:flex;align-items:center;gap:24px;justify-content:space-between;flex-wrap:wrap}
+.sos h2{font-size:24px;display:flex;align-items:center;gap:10px}
+.sos h2 span{background:var(--coral);font-family:Inter;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;letter-spacing:.04em}
+.sos p{color:#9cc8b1;font-size:14px}
+.sos .list{display:flex;gap:10px;flex-wrap:wrap}
+.sos .list a{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;background:#0f3d27;border:1px solid #1d5a3b;font-weight:600;font-size:14px}
+.sos .list a:hover{background:var(--g700)}
 
 /* Sections */
-section{padding:56px 0}
-.sec-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:24px;gap:16px}
-.sec-head h2{font-size:28px;font-weight:800;color:var(--g900)}
-.sec-head p{color:var(--muted)}
-.sec-head a{color:var(--g600);font-weight:600;white-space:nowrap}
+section{padding:72px 0}
+.shead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:28px}
+.shead h2{font-size:38px;line-height:1.1;color:var(--g950);max-width:620px}
+.shead p{color:var(--muted);margin-top:8px}
+.num{font-family:var(--head);font-weight:800;color:var(--g500);font-size:13px;letter-spacing:.12em;display:block;margin-bottom:6px}
 
-/* Categories */
-.cats{margin-top:-50px;padding-top:0;position:relative;z-index:2}
-.cat-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
-.cat{background:#fff;border-radius:var(--radius);padding:20px 14px;text-align:center;box-shadow:var(--shadow);border:1px solid transparent;transition:.2s}
-.cat:hover{border-color:var(--g500);transform:translateY(-3px)}
-.cat .ic{width:54px;height:54px;border-radius:14px;background:var(--g100);display:grid;place-items:center;margin:0 auto 10px;font-size:26px}
-.cat b{display:block;font-size:15px}
-.cat small{color:var(--muted)}
+/* Category explorer */
+.explorer{display:grid;grid-template-columns:300px 1fr;background:#fff;border-radius:24px;box-shadow:var(--shadow);overflow:hidden;border:1px solid var(--line)}
+.tabs{background:var(--g50);padding:12px;display:flex;flex-direction:column;gap:2px;border-right:1px solid var(--line)}
+.tabs button{display:flex;align-items:center;gap:12px;text-align:left;padding:12px 14px;border-radius:12px;font-weight:600;color:var(--muted);font-size:15px}
+.tabs button .e{width:36px;height:36px;border-radius:10px;background:#fff;display:grid;place-items:center;font-size:18px;flex:none}
+.tabs button small{margin-left:auto;font-weight:500;font-size:12px}
+.tabs button:hover{color:var(--g900)}
+.tabs button.on{background:var(--g900);color:#fff}
+.tabs button.on .e{background:var(--g700)}
+.panel{padding:30px 34px;display:none}
+.panel.on{display:block}
+.panel h3{font-size:30px;color:var(--g950)}
+.panel>p{color:var(--muted);margin:6px 0 22px}
+.subs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.subs a{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:14px 16px;border-radius:14px;border:1px solid var(--line);font-weight:500;transition:.15s}
+.subs a small{color:var(--muted);font-size:12px;white-space:nowrap}
+.subs a:hover{border-color:var(--g500);background:var(--g50);transform:translateX(2px)}
+.panel .foot{display:flex;justify-content:space-between;align-items:center;margin-top:24px;padding-top:20px;border-top:1px dashed var(--line);gap:12px;flex-wrap:wrap}
+.panel .foot span{color:var(--muted);font-size:14px}
 
-/* Usta cards */
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-.card{background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
-.card .top{height:92px;background:linear-gradient(135deg,var(--g500),var(--g800));position:relative}
-.badge{position:absolute;top:10px;right:10px;background:#fff;color:var(--g700);font-size:11px;font-weight:700;padding:4px 8px;border-radius:20px}
-.avatar{width:76px;height:76px;border-radius:50%;border:4px solid #fff;background:var(--g100);display:grid;place-items:center;font-weight:800;font-size:24px;color:var(--g700);margin:-40px auto 0;position:relative}
-.card .body{padding:10px 18px 18px;text-align:center;flex:1;display:flex;flex-direction:column}
-.card h3{font-size:17px;margin-top:6px}
-.card .job{color:var(--g600);font-weight:600;font-size:14px}
-.card .loc{color:var(--muted);font-size:13px;margin-top:4px}
-.stars{color:var(--accent);font-size:14px;margin-top:8px}
-.stars span{color:var(--muted)}
-.card .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:auto;padding-top:14px}
-.card .acts .btn{justify-content:center;padding:9px 10px;font-size:14px}
-.btn-wa{background:#e8f8ee;color:var(--g700)}
+/* Trending ranking */
+.trend-wrap{display:grid;grid-template-columns:1fr 1fr;gap:0 48px}
+.rank{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+.rank .n{font-family:var(--head);font-size:30px;font-weight:800;color:var(--g300)}
+.rank:nth-child(-n+3) .n{color:var(--g600)}
+.rank b{display:block;font-size:16px}
+.rank .meter{height:6px;background:var(--g100);border-radius:6px;margin-top:8px;overflow:hidden}
+.rank .meter i{display:block;height:100%;background:linear-gradient(90deg,var(--g500),var(--g800));border-radius:6px}
+.rank .ch{font-size:13px;font-weight:700;color:var(--g600);text-align:right}
+.rank .ch small{display:block;color:var(--muted);font-weight:500}
 
-/* Districts */
-.districts{background:#fff}
-.chips{display:flex;flex-wrap:wrap;gap:10px}
-.chip{padding:10px 16px;border-radius:30px;background:var(--g50);border:1px solid var(--line);font-weight:500}
-.chip:hover{background:var(--g600);color:#fff;border-color:var(--g600)}
-.chip small{color:var(--muted);margin-left:4px}
+/* Season */
+.season{display:grid;grid-template-columns:1fr 1.4fr;background:var(--g800);border-radius:28px;overflow:hidden;color:#fff}
+.season .l{padding:40px;background:linear-gradient(160deg,var(--g700),var(--g900))}
+.season .l .big{font-size:72px;line-height:1}
+.season h2{font-size:34px;margin:14px 0 10px}
+.season .l p{color:#b9e0cb}
+.season .r{padding:28px;display:grid;grid-template-columns:1fr 1fr;gap:12px;background:var(--g900)}
+.sc{background:#123f29;border:1px solid #1d5a3b;border-radius:16px;padding:18px}
+.sc:hover{border-color:var(--g500)}
+.sc .e{font-size:26px}
+.sc b{display:block;margin-top:8px}
+.sc small{color:#9cc8b1}
+.sc .p{margin-top:10px;font-size:13px;font-weight:600;color:var(--accent)}
 
-/* How */
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.step{background:#fff;border-radius:var(--radius);padding:26px;box-shadow:var(--shadow)}
-.step .n{width:40px;height:40px;border-radius:50%;background:var(--g600);color:#fff;display:grid;place-items:center;font-weight:800;margin-bottom:12px}
-.step h3{color:var(--g900);margin-bottom:6px}
+/* Ustalar */
+.ustalar{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.uc{background:#fff;border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:14px;transition:.2s}
+.uc:hover{box-shadow:var(--shadow);transform:translateY(-3px)}
+.uc .top{display:flex;gap:14px;align-items:center}
+.uc .av{width:62px;height:62px;border-radius:18px;font-size:20px}
+.uc h3{font-size:19px}
+.uc .job{color:var(--g600);font-weight:600;font-size:14px}
+.uc .score{margin-left:auto;text-align:center;background:var(--g50);border-radius:14px;padding:8px 12px}
+.uc .score b{font-family:var(--head);font-size:22px;color:var(--g800);display:block;line-height:1}
+.uc .score small{font-size:11px;color:var(--muted)}
+.uc .info{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;color:var(--muted)}
+.uc .info span{background:var(--g50);border-radius:10px;padding:8px 10px}
+.uc blockquote{font-size:14px;border-left:3px solid var(--g300);padding-left:12px;font-style:italic}
+.uc blockquote small{display:block;color:var(--muted);font-style:normal;margin-top:4px}
+.uc .acts{display:flex;gap:8px;margin-top:auto}
+.uc .acts .btn{flex:1;padding:10px}
+.btn-wa{background:var(--g100);color:var(--g800)}
+
+/* Districts bento */
+.bento{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:110px;gap:12px}
+.d{border-radius:18px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;background:#fff;border:1px solid var(--line);transition:.2s}
+.d:hover{border-color:var(--g500);background:var(--g50)}
+.d b{font-family:var(--head);font-size:19px;color:var(--g950)}
+.d small{color:var(--muted);font-size:13px}
+.d.xl{grid-column:span 2;grid-row:span 2;background:var(--g700);color:#fff;border:0}
+.d.xl b{color:#fff;font-size:34px}
+.d.xl small{color:#c6ead6}
+.d.lg{grid-column:span 2;background:var(--g100);border:0}
+.d.more{background:transparent;border:1.5px dashed var(--g300);align-items:center;justify-content:center;color:var(--g700);font-weight:600}
+
+/* Steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);position:relative}
+.step{padding-right:24px}
+.step .c{width:54px;height:54px;border-radius:50%;background:var(--cream);border:2px solid var(--g500);display:grid;place-items:center;font-family:var(--head);font-weight:800;font-size:22px;color:var(--g700);position:relative;z-index:1}
+.steps:before{content:"";position:absolute;top:27px;left:27px;right:33%;border-top:2px dashed var(--g300)}
+.step h3{font-size:22px;margin:16px 0 6px;color:var(--g950)}
 .step p{color:var(--muted)}
 
-/* CTA */
-.cta{background:linear-gradient(135deg,var(--g600),var(--g800));color:#fff;border-radius:20px;padding:40px;display:flex;justify-content:space-between;align-items:center;gap:20px}
-.cta h2{font-size:28px}
-.cta p{color:#d6f0e2;margin-top:6px}
+/* Join CTA */
+.join{background:var(--accent);border-radius:28px;padding:44px;display:grid;grid-template-columns:1.3fr 1fr;gap:30px;align-items:center}
+.join h2{font-size:40px;line-height:1.05;color:#2b2100}
+.join p{color:#5a4500;margin-top:10px;font-size:17px}
+.join ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.join li{background:rgba(255,255,255,.55);border-radius:14px;padding:12px 16px;font-weight:600;color:#3a2c00}
+.join .btn{margin-top:22px}
 
-footer{background:var(--g900);color:#b7d6c4;padding:48px 0 24px;margin-top:56px}
-.fgrid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:28px}
-footer h4{color:#fff;margin-bottom:12px}
-footer li{list-style:none;margin:6px 0;font-size:14px}
-.copy{border-top:1px solid #1f5a3c;margin-top:30px;padding-top:18px;font-size:13px;text-align:center}
+/* Footer */
+footer{background:var(--g950);color:#9cc8b1;padding:56px 0 28px;margin-top:72px}
+.ftop{display:grid;grid-template-columns:1.3fr 2fr;gap:40px}
+footer .logo{color:#fff}
+footer p{font-size:14px;margin-top:12px;max-width:320px}
+footer h4{color:#fff;font-size:15px;margin-bottom:12px;font-family:var(--head)}
+.cloud{display:flex;flex-wrap:wrap;gap:8px}
+.cloud a{font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid #1d5a3b}
+.cloud a:hover{background:var(--g800);color:#fff}
+.fbot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid #163f2b;margin-top:36px;padding-top:20px;font-size:13px}
+.fbot div{display:flex;gap:18px}
 
-@media (max-width:960px){
+/* Responsive */
+@media (max-width:1000px){
   nav{display:none}
-  .cat-grid{grid-template-columns:repeat(3,1fr)}
-  .grid{grid-template-columns:repeat(2,1fr)}
-  .fgrid{grid-template-columns:1fr 1fr}
+  .hero .wrap{grid-template-columns:1fr}
+  .stage{height:360px;max-width:460px}
+  .explorer{grid-template-columns:1fr}
+  .tabs{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}
+  .tabs button{flex:none}
+  .tabs button small{display:none}
+  .subs{grid-template-columns:repeat(2,1fr)}
+  .ustalar{grid-template-columns:1fr 1fr}
+  .season{grid-template-columns:1fr}
+  .bento{grid-template-columns:repeat(4,1fr)}
+  .join{grid-template-columns:1fr}
+  .ftop{grid-template-columns:1fr}
 }
 @media (max-width:640px){
-  .topbar .wrap span:last-child{display:none}
-  .hbtns .btn-ghost{display:none}
-  .hero{padding:40px 0 80px}
-  .hero h1{font-size:30px}
-  .hero p{font-size:16px}
-  .search{grid-template-columns:1fr}
-  .search .btn{min-height:50px;justify-content:center}
-  .stats{gap:22px}
-  .cat-grid{grid-template-columns:repeat(2,1fr)}
-  .grid{grid-template-columns:1fr}
-  .steps{grid-template-columns:1fr}
-  .cta{flex-direction:column;align-items:flex-start;padding:28px}
-  .sec-head{flex-direction:column;align-items:flex-start}
-  .fgrid{grid-template-columns:1fr}
-}
-
-/* Trend cards */
-.trend{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.tcard{background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line);transition:.2s}
-.tcard:hover{transform:translateY(-3px);border-color:var(--g500)}
-.timg{height:120px;display:grid;place-items:center;font-size:52px;background:linear-gradient(135deg,#d9f2e4,#a9dfc2)}
-.tcard:nth-child(3n+2) .timg{background:linear-gradient(135deg,#e6f4ec,#c5e8d4)}
-.tcard:nth-child(3n) .timg{background:linear-gradient(135deg,#cdeedd,#8fd3ae)}
-.tbody{padding:12px 14px 14px}
-.tbody b{display:block;color:var(--g700);font-size:15px;margin-bottom:4px}
-.tbody small{display:block;color:var(--muted);font-size:12.5px}
-/* All services */
-.allsvc{background:#fff}
-.groups{display:grid;grid-template-columns:repeat(5,1fr);gap:26px 22px}
-.grp h3{font-size:15px;color:var(--g900);margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid var(--g100)}
-.grp ul{list-style:none}
-.grp li{margin:5px 0;font-size:14px;color:var(--muted)}
-.grp li a:hover{color:var(--g600);text-decoration:underline}
-/* Popular */
-.popular{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 24px}
-.popular a{font-weight:500;text-decoration:underline;text-decoration-color:#b7d6c4;text-underline-offset:3px}
-.popular a:hover{color:var(--g600);text-decoration-color:var(--g600)}
-@media (max-width:960px){
-  .trend{grid-template-columns:repeat(3,1fr)}
-  .groups{grid-template-columns:repeat(3,1fr)}
-  .popular{grid-template-columns:repeat(2,1fr)}
-}
-@media (max-width:640px){
-  .trend{grid-template-columns:repeat(2,1fr);gap:12px}
-  .timg{height:90px;font-size:40px}
-  .groups{grid-template-columns:1fr 1fr;gap:20px 16px}
-  .popular{grid-template-columns:1fr 1fr;font-size:14px}
+  .hbtns .btn-line{display:none}
+  .hero{padding:32px 0 90px}
+  .hero h1{font-size:40px}
+  .ask .sent{font-size:20px}
+  .stage{display:none}
+  .f1{width:240px;top:30px}
+  .f2{top:170px;width:210px}
+  section{padding:52px 0}
+  .shead{flex-direction:column;align-items:flex-start}
+  .shead h2{font-size:30px}
+  .panel{padding:22px 18px}
+  .panel h3{font-size:24px}
+  .subs{grid-template-columns:1fr}
+  .trend-wrap{grid-template-columns:1fr}
+  .season .l{padding:28px}
+  .season .r{padding:16px;gap:10px}
+  .ustalar{grid-template-columns:1fr}
+  .bento{grid-template-columns:repeat(2,1fr);grid-auto-rows:96px}
+  .d.xl{grid-row:span 1}
+  .d.xl b{font-size:26px}
+  .steps{grid-template-columns:1fr;gap:26px}
+  .steps:before{display:none}
+  .join{padding:28px}
+  .join h2{font-size:30px}
 }
 </style>
 </head>
 <body>
 
-<div class="topbar"><div class="wrap"><span>📍 Samsun'un 17 ilçesinde güvenilir ustalar</span><span>📞 Destek: 0362 000 00 00</span></div></div>
-
 <header><div class="wrap">
-  <a class="logo" href="#"><div class="mark"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg></div><span>Samsun<b>Ustam</b></span></a>
-  <nav><a href="#">Ana Sayfa</a><a href="#">Kategoriler</a><a href="#">İlçeler</a><a href="#">Nasıl Çalışır?</a><a href="#">İletişim</a></nav>
-  <div class="hbtns"><a class="btn btn-ghost" href="#">Giriş Yap</a><a class="btn btn-main" href="#">Usta Kaydı</a></div>
+  <a class="logo" href="#"><div class="mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg></div><span>Samsun<b>Ustam</b></span></a>
+  <nav><a href="#hizmetler">Hizmetler</a><a href="#ustalar">Ustalar</a><a href="#ilceler">İlçeler</a><a href="#nasil">Nasıl Çalışır?</a></nav>
+  <div class="hbtns"><a class="btn btn-line" href="#">Giriş</a><a class="btn btn-dark" href="#">Usta mısın?</a></div>
 </div></header>
 
 <div class="hero"><div class="wrap">
-  <h1>Samsun'daki <em>en iyi ustalar</em> tek bir yerde</h1>
-  <p>Elektrikçiden tesisatçıya, boyacıdan kombi servisine; mahallendeki güvenilir ustayı bul, yorumları oku, hemen ara.</p>
-  <form class="search" onsubmit="return false">
-    <label class="field">🔍 <input placeholder="Hangi ustayı arıyorsun? (örn. elektrikçi)"></label>
-    <label class="field">📍 <select><option>Tüm İlçeler</option><option>Atakum</option><option>İlkadım</option><option>Canik</option><option>Tekkeköy</option><option>Bafra</option><option>Çarşamba</option></select></label>
-    <button class="btn btn-accent">Usta Bul</button>
-  </form>
-  <div class="stats"><div><b>1.200+</b>Kayıtlı Usta</div><div><b>120+</b>Hizmet</div><div><b>17</b>İlçe</div><div><b>8.500+</b>Müşteri Yorumu</div></div>
+  <div>
+    <span class="eyebrow"><i></i> Şu an 214 usta çevrimiçi</span>
+    <h1>Evde bir şey mi bozuldu? <span class="hl">Samsun'da ustası var.</span></h1>
+    <p class="lead">Atakum'dan Bafra'ya, mahallendeki güvenilir ustayı bul. Yorumları oku, tek dokunuşla ara.</p>
+    <form class="ask" onsubmit="return false">
+      <div class="sent">Bana bir
+        <select><option>elektrikçi</option><option>tesisatçı</option><option>kombici</option><option>boyacı</option><option>nakliyeci</option><option>temizlikçi</option><option>çilingir</option></select>
+        lazım,
+        <select id="ilce"><option>Atakum</option><option>İlkadım</option><option>Canik</option><option>Tekkeköy</option><option>Bafra</option><option>Çarşamba</option><option>Terme</option></select><span id="ek">'da</span>.
+      </div>
+      <div class="row">
+        <div class="quick"><a href="#">Kombi bakımı</a><a href="#">Su kaçağı</a><a href="#">Boya badana</a></div>
+        <button class="btn btn-dark">Ustaları göster →</button>
+      </div>
+    </form>
+  </div>
+  <div class="stage">
+    <div class="blob"></div>
+    <div class="float f1">
+      <div class="top"><div class="av">AY</div><div><b>Ahmet Yılmaz</b><small>Elektrikçi · Atakum</small></div></div>
+      <div class="tags"><span class="tag">✔ Belgeli</span><span class="tag y">★ 4.9</span><span class="tag">Keşif ücretsiz</span></div>
+    </div>
+    <div class="float f2"><div class="dot">✓</div><div><b>Yanıt geldi!</b><small>Mehmet Usta 8 dk içinde döndü</small></div></div>
+    <div class="float f3"><b>8.500+</b><small>Samsunlu komşunun<br>onaylı yorumu</small></div>
+  </div>
+</div>
+<div class="wave"><svg viewBox="0 0 1440 80" preserveAspectRatio="none" width="100%" height="70"><path d="M0 40 C240 80 480 0 720 30 C960 60 1200 10 1440 40 L1440 80 L0 80 Z" fill="#06291a"/></svg></div>
+</div>
+
+<div class="sos"><div class="wrap">
+  <div><h2>Acil mi? <span>7/24</span></h2><p>Gece yarısı da olsa nöbetçi usta bul.</p></div>
+  <div class="list"><a href="#">🔑 Çilingir</a><a href="#">💧 Su Kaçağı</a><a href="#">⚡ Elektrik Arızası</a><a href="#">🔥 Kombi Arızası</a><a href="#">🛻 Oto Çekici</a></div>
 </div></div>
 
-<section class="cats"><div class="wrap">
-  <div class="cat-grid">
-    <a class="cat" href="#"><div class="ic">🏠</div><b>Tadilat & Dekorasyon</b><small>214 usta</small></a>
-    <a class="cat" href="#"><div class="ic">🔧</div><b>Montaj & Tamir</b><small>286 usta</small></a>
-    <a class="cat" href="#"><div class="ic">🧽</div><b>Temizlik</b><small>173 usta</small></a>
-    <a class="cat" href="#"><div class="ic">🚚</div><b>Nakliyat</b><small>98 usta</small></a>
-    <a class="cat" href="#"><div class="ic">🔥</div><b>Kombi & Klima</b><small>159 usta</small></a>
-    <a class="cat" href="#"><div class="ic">⚡</div><b>Elektrik</b><small>184 usta</small></a>
-    <a class="cat" href="#"><div class="ic">🚰</div><b>Su Tesisatı</b><small>142 usta</small></a>
-    <a class="cat" href="#"><div class="ic">🎨</div><b>Boya Badana</b><small>121 usta</small></a>
-    <a class="cat" href="#"><div class="ic">🪚</div><b>Mobilya & Marangoz</b><small>87 usta</small></a>
-    <a class="cat" href="#"><div class="ic">🪟</div><b>Cam, PVC & Alüminyum</b><small>64 usta</small></a>
-    <a class="cat" href="#"><div class="ic">🚗</div><b>Oto & Araç</b><small>156 usta</small></a>
-    <a class="cat" href="#"><div class="ic">➕</div><b>Tüm Hizmetler</b><small>120+ hizmet</small></a>
+<section id="hizmetler"><div class="wrap">
+  <div class="shead"><div><span class="num">01 — HİZMETLER</span><h2>Ne lazımsa, kategorisini seç.</h2></div><a class="link" href="#">120+ hizmetin tamamı →</a></div>
+  <div class="explorer">
+    <div class="tabs" id="tabs">
+      <button class="on" data-t="0"><span class="e">🔧</span>Tamir & Montaj<small>286</small></button>
+      <button data-t="1"><span class="e">🏠</span>Tadilat & Dekor<small>214</small></button>
+      <button data-t="2"><span class="e">🔥</span>Kombi & Klima<small>159</small></button>
+      <button data-t="3"><span class="e">🧽</span>Temizlik<small>173</small></button>
+      <button data-t="4"><span class="e">🚚</span>Nakliyat<small>98</small></button>
+      <button data-t="5"><span class="e">🪚</span>Mobilya & Cam<small>151</small></button>
+      <button data-t="6"><span class="e">🚗</span>Oto & Araç<small>156</small></button>
+      <button data-t="7"><span class="e">🌿</span>Bahçe & Dış Mekan<small>42</small></button>
+    </div>
+    <div id="panels"></div>
   </div>
 </div></section>
 
-<section style="padding-top:44px"><div class="wrap">
-  <div class="sec-head"><div><h2>Haftanın Trend Hizmetleri</h2><p>Samsun'da bu hafta en çok aranan hizmetler</p></div><a href="#">Tümünü gör →</a></div>
-  <div class="trend">
-    <a class="tcard" href="#"><div class="timg">🚚</div><div class="tbody"><b>Evden Eve Nakliyat</b><small>👷 68 usta</small><small>⭐ 4.9 (1.240 yorum)</small></div></a>
-    <a class="tcard" href="#"><div class="timg">🎨</div><div class="tbody"><b>Boya Badana</b><small>👷 121 usta</small><small>⭐ 4.8 (2.310 yorum)</small></div></a>
-    <a class="tcard" href="#"><div class="timg">🧽</div><div class="tbody"><b>Ev Temizliği</b><small>👷 96 usta</small><small>⭐ 4.7 (1.980 yorum)</small></div></a>
-    <a class="tcard" href="#"><div class="timg">🌡️</div><div class="tbody"><b>Kombi Petek Temizleme</b><small>👷 54 usta</small><small>⭐ 4.9 (870 yorum)</small></div></a>
-    <a class="tcard" href="#"><div class="timg">🏚️</div><div class="tbody"><b>Boş Ev Temizliği</b><small>👷 47 usta</small><small>⭐ 4.7 (640 yorum)</small></div></a>
-    <a class="tcard" href="#"><div class="timg">🧱</div><div class="tbody"><b>Fayans Döşeme</b><small>👷 89 usta</small><small>⭐ 4.7 (910 yorum)</small></div></a>
-    <a class="tcard" href="#"><div class="timg">🛋️</div><div class="tbody"><b>Koltuk Taşıma</b><small>👷 38 usta</small><small>⭐ 4.9 (420 yorum)</small></div></a>
-    <a class="tcard" href="#"><div class="timg">🍳</div><div class="tbody"><b>Mutfak Dolabı Yapımı</b><small>👷 41 usta</small><small>⭐ 4.6 (380 yorum)</small></div></a>
-    <a class="tcard" href="#"><div class="timg">📦</div><div class="tbody"><b>Eşya Taşıma</b><small>👷 52 usta</small><small>⭐ 4.9 (760 yorum)</small></div></a>
-    <a class="tcard" href="#"><div class="timg">🛻</div><div class="tbody"><b>Oto Çekici</b><small>👷 29 usta</small><small>⭐ 4.9 (510 yorum)</small></div></a>
-    <a class="tcard" href="#"><div class="timg">🔥</div><div class="tbody"><b>Kombi Tamiri</b><small>👷 73 usta</small><small>⭐ 4.9 (1.120 yorum)</small></div></a>
-    <a class="tcard" href="#"><div class="timg">❄️</div><div class="tbody"><b>Klima Servisi</b><small>👷 63 usta</small><small>⭐ 4.8 (690 yorum)</small></div></a>
+<section style="padding-top:0"><div class="wrap">
+  <div class="shead"><div><span class="num">02 — BU HAFTA</span><h2>Samsun bu hafta ne arıyor?</h2><p>Son 7 günde en çok aranan hizmetler</p></div></div>
+  <div class="trend-wrap" id="trend"></div>
+</div></section>
+
+<section style="padding-top:0"><div class="wrap">
+  <div class="season">
+    <div class="l"><div class="big">🌧️</div><h2>Karadeniz kışı kapıda.</h2><p>Yağmur ve soğuk gelmeden evini hazırla. Kasım'da en çok bunlar yaptırılıyor.</p></div>
+    <div class="r">
+      <a class="sc" href="#"><div class="e">🔥</div><b>Kombi Bakımı</b><small>73 usta hazır</small><div class="p">Ortalama 1.200 ₺ →</div></a>
+      <a class="sc" href="#"><div class="e">🌡️</div><b>Petek Temizleme</b><small>54 usta hazır</small><div class="p">Ortalama 1.500 ₺ →</div></a>
+      <a class="sc" href="#"><div class="e">🏠</div><b>Çatı & Oluk Tamiri</b><small>31 usta hazır</small><div class="p">Keşif ücretsiz →</div></a>
+      <a class="sc" href="#"><div class="e">🧱</div><b>Mantolama</b><small>28 usta hazır</small><div class="p">Keşif ücretsiz →</div></a>
+    </div>
   </div>
 </div></section>
 
-<section style="padding-top:20px"><div class="wrap">
-  <div class="sec-head"><div><h2>Öne Çıkan Ustalar</h2><p>Müşterilerinden en yüksek puanı alan ustalar</p></div><a href="#">Tüm ustalar →</a></div>
-  <div class="grid">
-    <div class="card"><div class="top"><span class="badge">✔ Onaylı</span></div><div class="avatar">AY</div><div class="body"><h3>Ahmet Yılmaz</h3><div class="job">Elektrikçi</div><div class="loc">📍 Atakum · 15 yıl tecrübe</div><div class="stars">★★★★★ <span>4.9 (128)</span></div><div class="acts"><a class="btn btn-main" href="#">📞 Ara</a><a class="btn btn-wa" href="#">WhatsApp</a></div></div></div>
-    <div class="card"><div class="top"><span class="badge">✔ Onaylı</span></div><div class="avatar">MK</div><div class="body"><h3>Mehmet Kaya</h3><div class="job">Su Tesisatçısı</div><div class="loc">📍 İlkadım · 22 yıl tecrübe</div><div class="stars">★★★★★ <span>4.8 (96)</span></div><div class="acts"><a class="btn btn-main" href="#">📞 Ara</a><a class="btn btn-wa" href="#">WhatsApp</a></div></div></div>
-    <div class="card"><div class="top"><span class="badge">✔ Onaylı</span></div><div class="avatar">HD</div><div class="body"><h3>Hasan Demir</h3><div class="job">Kombi Servisi</div><div class="loc">📍 Canik · 10 yıl tecrübe</div><div class="stars">★★★★☆ <span>4.7 (74)</span></div><div class="acts"><a class="btn btn-main" href="#">📞 Ara</a><a class="btn btn-wa" href="#">WhatsApp</a></div></div></div>
-    <div class="card"><div class="top"><span class="badge">✔ Onaylı</span></div><div class="avatar">OŞ</div><div class="body"><h3>Osman Şahin</h3><div class="job">Boya Badana</div><div class="loc">📍 Bafra · 18 yıl tecrübe</div><div class="stars">★★★★★ <span>4.9 (61)</span></div><div class="acts"><a class="btn btn-main" href="#">📞 Ara</a><a class="btn btn-wa" href="#">WhatsApp</a></div></div></div>
+<section id="ustalar" style="padding-top:0"><div class="wrap">
+  <div class="shead"><div><span class="num">03 — USTALAR</span><h2>Komşularının tavsiye ettiği ustalar</h2></div><a class="link" href="#">Tüm ustalar →</a></div>
+  <div class="ustalar">
+    <div class="uc">
+      <div class="top"><div class="av">AY</div><div><h3>Ahmet Yılmaz</h3><div class="job">Elektrikçi</div></div><div class="score"><b>4.9</b><small>128 yorum</small></div></div>
+      <div class="info"><span>📍 Atakum, İlkadım</span><span>🕒 15 yıl tecrübe</span><span>⚡ ~10 dk yanıt</span><span>✔ Belgeli</span></div>
+      <blockquote>"Gece 11'de sigorta attı, yarım saatte geldi."<small>— Zeynep, Mimarsinan</small></blockquote>
+      <div class="acts"><a class="btn btn-dark" href="#">📞 Ara</a><a class="btn btn-wa" href="#">WhatsApp</a></div>
+    </div>
+    <div class="uc">
+      <div class="top"><div class="av">MK</div><div><h3>Mehmet Kaya</h3><div class="job">Su Tesisatçısı</div></div><div class="score"><b>4.8</b><small>96 yorum</small></div></div>
+      <div class="info"><span>📍 İlkadım, Canik</span><span>🕒 22 yıl tecrübe</span><span>⚡ ~25 dk yanıt</span><span>✔ Belgeli</span></div>
+      <blockquote>"Kaçağı duvarı kırmadan buldu, çok temiz çalıştı."<small>— Kemal, Kale Mah.</small></blockquote>
+      <div class="acts"><a class="btn btn-dark" href="#">📞 Ara</a><a class="btn btn-wa" href="#">WhatsApp</a></div>
+    </div>
+    <div class="uc">
+      <div class="top"><div class="av">OŞ</div><div><h3>Osman Şahin</h3><div class="job">Boya Badana</div></div><div class="score"><b>4.9</b><small>61 yorum</small></div></div>
+      <div class="info"><span>📍 Bafra, 19 Mayıs</span><span>🕒 18 yıl tecrübe</span><span>⚡ ~1 sa yanıt</span><span>🎁 Keşif ücretsiz</span></div>
+      <blockquote>"3+1 daireyi 2 günde bitirdi, eşyalara damla yok."<small>— Ayşe, Bafra</small></blockquote>
+      <div class="acts"><a class="btn btn-dark" href="#">📞 Ara</a><a class="btn btn-wa" href="#">WhatsApp</a></div>
+    </div>
   </div>
 </div></section>
 
-<section class="districts"><div class="wrap">
-  <div class="sec-head"><div><h2>İlçelere Göre Ustalar</h2><p>Sana en yakın ustayı bul</p></div></div>
-  <div class="chips">
-    <a class="chip" href="#">Atakum<small>312</small></a><a class="chip" href="#">İlkadım<small>298</small></a><a class="chip" href="#">Canik<small>154</small></a><a class="chip" href="#">Tekkeköy<small>87</small></a><a class="chip" href="#">Bafra<small>121</small></a><a class="chip" href="#">Çarşamba<small>109</small></a><a class="chip" href="#">Terme<small>48</small></a><a class="chip" href="#">Vezirköprü<small>36</small></a><a class="chip" href="#">Havza<small>29</small></a><a class="chip" href="#">Kavak<small>14</small></a><a class="chip" href="#">Ladik<small>17</small></a><a class="chip" href="#">Alaçam<small>19</small></a><a class="chip" href="#">19 Mayıs<small>22</small></a><a class="chip" href="#">Asarcık<small>6</small></a><a class="chip" href="#">Ayvacık<small>8</small></a><a class="chip" href="#">Salıpazarı<small>9</small></a><a class="chip" href="#">Yakakent<small>7</small></a>
+<section id="ilceler" style="padding-top:0"><div class="wrap">
+  <div class="shead"><div><span class="num">04 — İLÇELER</span><h2>17 ilçenin hepsinde.</h2></div></div>
+  <div class="bento">
+    <a class="d xl" href="#"><small>En çok usta</small><b>Atakum</b><small>312 usta · 40+ hizmet</small></a>
+    <a class="d lg" href="#"><b>İlkadım</b><small>298 usta</small></a>
+    <a class="d" href="#"><b>Canik</b><small>154 usta</small></a>
+    <a class="d" href="#"><b>Bafra</b><small>121 usta</small></a>
+    <a class="d" href="#"><b>Çarşamba</b><small>109 usta</small></a>
+    <a class="d" href="#"><b>Tekkeköy</b><small>87 usta</small></a>
+    <a class="d" href="#"><b>Terme</b><small>48 usta</small></a>
+    <a class="d" href="#"><b>Vezirköprü</b><small>36 usta</small></a>
+    <a class="d" href="#"><b>Havza</b><small>29 usta</small></a>
+    <a class="d" href="#"><b>19 Mayıs</b><small>22 usta</small></a>
+    <a class="d more" href="#">+7 ilçe daha →</a>
   </div>
 </div></section>
 
-<section class="allsvc"><div class="wrap">
-  <div class="sec-head"><div><h2>Tüm Hizmetler</h2><p>Aradığın hizmeti kategorisinden bul</p></div></div>
-  <div class="groups">
-    <div class="grp"><h3>🏠 Tadilat & Dekorasyon</h3><ul><li><a href="#">Fayans Döşeme</a></li><li><a href="#">Mutfak Dolabı</a></li><li><a href="#">Mutfak Dekorasyon</a></li><li><a href="#">Banyo Tadilatı</a></li><li><a href="#">Duşakabin</a></li><li><a href="#">Alçı & Kartonpiyer</a></li><li><a href="#">Asma Tavan</a></li><li><a href="#">Laminat Parke</a></li><li><a href="#">Duvar Kağıdı</a></li><li><a href="#">Duvar Dekorasyon</a></li><li><a href="#">İç Mimar</a></li><li><a href="#">Anahtar Teslim Tadilat</a></li></ul></div>
-    <div class="grp"><h3>🔧 Montaj & Tamir</h3><ul><li><a href="#">Elektrikçi</a></li><li><a href="#">Su Tesisatçısı</a></li><li><a href="#">Tıkanıklık Açma</a></li><li><a href="#">Su Kaçağı Tespiti</a></li><li><a href="#">Beyaz Eşya Servisi</a></li><li><a href="#">Televizyon Tamiri</a></li><li><a href="#">Uydu Kurulumu</a></li><li><a href="#">Avize Montajı</a></li><li><a href="#">Mobilya Montajı</a></li><li><a href="#">Kapı & Kilit Tamiri</a></li><li><a href="#">Çilingir</a></li><li><a href="#">Güvenlik Kamerası</a></li></ul></div>
-    <div class="grp"><h3>🔥 Kombi & Klima</h3><ul><li><a href="#">Kombi Servisi</a></li><li><a href="#">Kombi Tamiri</a></li><li><a href="#">Kombi Bakımı</a></li><li><a href="#">Kombi Petek Temizleme</a></li><li><a href="#">Doğalgaz Tesisatı</a></li><li><a href="#">Klima Servisi</a></li><li><a href="#">Klima Montajı</a></li><li><a href="#">Demirdöküm Kombi Servisi</a></li><li><a href="#">ECA Kombi Servisi</a></li><li><a href="#">Vaillant Kombi Servisi</a></li><li><a href="#">Baymak Kombi Servisi</a></li><li><a href="#">Bosch Kombi Servisi</a></li></ul></div>
-    <div class="grp"><h3>🧽 Temizlik</h3><ul><li><a href="#">Ev Temizliği</a></li><li><a href="#">Boş Ev Temizliği</a></li><li><a href="#">İnşaat Sonrası Temizlik</a></li><li><a href="#">Ofis Temizliği</a></li><li><a href="#">Merdiven Temizliği</a></li><li><a href="#">Halı Yıkama</a></li><li><a href="#">Koltuk Yıkama</a></li><li><a href="#">Yatak Yıkama</a></li><li><a href="#">Cam Temizliği</a></li><li><a href="#">Dış Cephe Temizliği</a></li><li><a href="#">İlaçlama</a></li><li><a href="#">Su Deposu Temizliği</a></li></ul></div>
-    <div class="grp"><h3>🚚 Nakliyat</h3><ul><li><a href="#">Evden Eve Nakliyat</a></li><li><a href="#">Şehirler Arası Nakliyat</a></li><li><a href="#">Parça Eşya Taşıma</a></li><li><a href="#">Koltuk Taşıma</a></li><li><a href="#">Beyaz Eşya Taşıma</a></li><li><a href="#">Ofis Taşıma</a></li><li><a href="#">Asansörlü Taşıma</a></li><li><a href="#">Eşya Depolama</a></li><li><a href="#">Kamyonet Kiralama</a></li></ul></div>
-    <div class="grp"><h3>🎨 Boya & Yalıtım</h3><ul><li><a href="#">Boyacı (Boya Badana)</a></li><li><a href="#">Dış Cephe Boyası</a></li><li><a href="#">Mantolama</a></li><li><a href="#">Çatı Tamiri</a></li><li><a href="#">Su Yalıtımı</a></li><li><a href="#">İzolasyon</a></li></ul></div>
-    <div class="grp"><h3>🪚 Mobilya & Marangoz</h3><ul><li><a href="#">Marangoz</a></li><li><a href="#">Mobilya Tamiri</a></li><li><a href="#">Özel Mobilya Yapımı</a></li><li><a href="#">Gardırop Yapımı</a></li><li><a href="#">Kapı Yapımı</a></li><li><a href="#">Döşemeci</a></li></ul></div>
-    <div class="grp"><h3>🪟 Cam, PVC & Alüminyum</h3><ul><li><a href="#">Cam Balkon</a></li><li><a href="#">PVC Pencere</a></li><li><a href="#">Sineklik</a></li><li><a href="#">Panjur & Kepenk</a></li><li><a href="#">Alüminyum Doğrama</a></li><li><a href="#">Cam Değişimi</a></li></ul></div>
-    <div class="grp"><h3>🚗 Oto & Araç</h3><ul><li><a href="#">Oto Çekici</a></li><li><a href="#">Oto Tamir</a></li><li><a href="#">Oto Elektrik</a></li><li><a href="#">Oto Boya</a></li><li><a href="#">Lastik Tamiri</a></li><li><a href="#">Oto Kuaför</a></li></ul></div>
-    <div class="grp"><h3>🌿 Bahçe & Dış Mekan</h3><ul><li><a href="#">Bahçe Bakımı</a></li><li><a href="#">Ağaç Kesimi</a></li><li><a href="#">Çim Ekimi</a></li><li><a href="#">Peyzaj</a></li><li><a href="#">Havuz Bakımı</a></li><li><a href="#">Kamelya & Pergola</a></li></ul></div>
-  </div>
-</div></section>
-
-<section style="padding-bottom:20px"><div class="wrap">
-  <div class="sec-head"><div><h2>Popüler Hizmetler</h2></div></div>
-  <div class="popular"><a href="#">Boş Ev Temizliği</a><a href="#">Boyacı (Boya Badana Ustası)</a><a href="#">Cam Balkon</a><a href="#">Demirdöküm Kombi Servisi</a><a href="#">Duşakabin</a><a href="#">Duvar Dekorasyon</a><a href="#">ECA Kombi Servisi</a><a href="#">Elektrikçi</a><a href="#">Parça Eşya Taşıma</a><a href="#">Ev Dekorasyon</a><a href="#">Ev Temizliği</a><a href="#">Evden Eve Nakliyat</a><a href="#">Fayans Döşeme</a><a href="#">Halı Yıkama</a><a href="#">İç Mimar</a><a href="#">Su Tesisatçısı</a><a href="#">Klima Servisi</a><a href="#">Koltuk Yıkama</a><a href="#">Kombi Servisi</a><a href="#">Mutfak Dekorasyon</a><a href="#">Mutfak Dolabı</a><a href="#">Nakliye</a><a href="#">Çilingir</a><a href="#">Vaillant Kombi Servisi</a><a href="#">Atakum Elektrikçi</a><a href="#">İlkadım Tesisatçı</a><a href="#">Atakum Kombi Servisi</a><a href="#">Canik Boyacı</a><a href="#">Bafra Nakliyat</a><a href="#">Çarşamba Oto Tamir</a></div>
-</div></section>
-
-<section><div class="wrap">
-  <div class="sec-head"><div><h2>Nasıl Çalışır?</h2><p>3 adımda ustanı bul</p></div></div>
+<section id="nasil" style="padding-top:0"><div class="wrap">
+  <div class="shead"><div><span class="num">05 — NASIL ÇALIŞIR?</span><h2>Üç adım, bir telefon.</h2></div></div>
   <div class="steps">
-    <div class="step"><div class="n">1</div><h3>Ara</h3><p>İhtiyacın olan meslek dalını ve ilçeni seç.</p></div>
-    <div class="step"><div class="n">2</div><h3>Karşılaştır</h3><p>Ustaların puanlarını, yorumlarını ve tecrübelerini incele.</p></div>
-    <div class="step"><div class="n">3</div><h3>İletişime Geç</h3><p>Tek dokunuşla ara ya da WhatsApp'tan yaz.</p></div>
+    <div class="step"><div class="c">1</div><h3>Ne lazım, söyle</h3><p>Hizmeti ve ilçeni seç, sana yakın ustalar listelensin.</p></div>
+    <div class="step"><div class="c">2</div><h3>Komşuna sor</h3><p>Samsunlu müşterilerin gerçek yorumlarını ve puanlarını oku.</p></div>
+    <div class="step"><div class="c">3</div><h3>Ara, anlaş</h3><p>Aracı yok, komisyon yok. Ustayla doğrudan konuş.</p></div>
   </div>
 </div></section>
 
-<div class="wrap"><div class="cta"><div><h2>Usta mısın? Sen de listelen!</h2><p>Samsun'da binlerce müşteriye ulaş. Kayıt ücretsiz.</p></div><a class="btn btn-accent" href="#">Hemen Kayıt Ol →</a></div></div>
+<div class="wrap"><div class="join">
+  <div><h2>Usta mısın? Müşteri seni bulsun.</h2><p>Samsun'da her gün yüzlerce kişi usta arıyor. Profilini oluştur, telefonun çalsın.</p><a class="btn btn-dark" href="#">Ücretsiz profil oluştur →</a></div>
+  <ul><li>📱 5 dakikada profil</li><li>📊 Kaç kişinin baktığını gör</li><li>⭐ Yorumlarla güven kazan</li></ul>
+</div></div>
 
 <footer><div class="wrap">
-  <div class="fgrid">
-    <div><div class="logo" style="color:#fff"><span>Samsun<b>Ustam</b></span></div><p style="margin-top:10px;font-size:14px">Samsun'daki tüm ustaları bir araya getiren yerel rehber.</p></div>
-    <div><h4>Popüler</h4><ul><li>Elektrikçi</li><li>Tesisatçı</li><li>Kombi Servisi</li><li>Boya Badana</li></ul></div>
-    <div><h4>İlçeler</h4><ul><li>Atakum</li><li>İlkadım</li><li>Canik</li><li>Bafra</li></ul></div>
-    <div><h4>Kurumsal</h4><ul><li>Hakkımızda</li><li>Usta Kaydı</li><li>Gizlilik</li><li>İletişim</li></ul></div>
+  <div class="ftop">
+    <div><div class="logo"><div class="mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg></div><span>Samsun<b>Ustam</b></span></div><p>Samsun'un yerel usta rehberi. Mahallendeki ustayı bul, komşularının yorumlarını oku.</p></div>
+    <div><h4>Samsun'da sık arananlar</h4><div class="cloud">
+      <a href="#">Atakum elektrikçi</a><a href="#">İlkadım tesisatçı</a><a href="#">Atakum kombi servisi</a><a href="#">Canik boyacı</a><a href="#">Bafra nakliyat</a><a href="#">Çarşamba oto tamir</a><a href="#">Samsun çilingir</a><a href="#">Samsun cam balkon</a><a href="#">Samsun halı yıkama</a><a href="#">Demirdöküm servisi Samsun</a><a href="#">Vaillant servisi Samsun</a><a href="#">Samsun evden eve nakliyat</a><a href="#">Tekkeköy fayans ustası</a><a href="#">Samsun mutfak dolabı</a>
+    </div></div>
   </div>
-  <div class="copy">© 2026 Samsun Ustam · Tüm hakları saklıdır.</div>
+  <div class="fbot"><span>© 2026 Samsun Ustam</span><div><a href="#">Hakkımızda</a><a href="#">Gizlilik</a><a href="#">İletişim</a></div></div>
 </div></footer>
 
+<script>
+const cats=[
+ ["Tamir & Montaj","Evdeki her arıza için doğru usta.",["Elektrikçi","Su Tesisatçısı","Tıkanıklık Açma","Su Kaçağı Tespiti","Beyaz Eşya Servisi","Televizyon Tamiri","Uydu Kurulumu","Avize Montajı","Mobilya Montajı","Kapı & Kilit Tamiri","Çilingir","Güvenlik Kamerası"]],
+ ["Tadilat & Dekor","Küçük dokunuştan anahtar teslim tadilata.",["Fayans Döşeme","Mutfak Dolabı","Banyo Tadilatı","Duşakabin","Alçı & Kartonpiyer","Asma Tavan","Laminat Parke","Duvar Kağıdı","Boya Badana","Mantolama","İç Mimar","Anahtar Teslim Tadilat"]],
+ ["Kombi & Klima","Kışa hazır, yaza serin.",["Kombi Bakımı","Kombi Tamiri","Petek Temizleme","Doğalgaz Tesisatı","Klima Montajı","Klima Bakımı","Demirdöküm Servisi","ECA Servisi","Vaillant Servisi","Baymak Servisi","Bosch Servisi","Termosifon"]],
+ ["Temizlik","Ev, ofis, inşaat sonrası; pırıl pırıl.",["Ev Temizliği","Boş Ev Temizliği","İnşaat Sonrası","Ofis Temizliği","Merdiven Temizliği","Halı Yıkama","Koltuk Yıkama","Yatak Yıkama","Cam Temizliği","Dış Cephe","İlaçlama","Su Deposu"]],
+ ["Nakliyat","Tek parçadan komple eve.",["Evden Eve Nakliyat","Şehirler Arası","Parça Eşya Taşıma","Koltuk Taşıma","Beyaz Eşya Taşıma","Ofis Taşıma","Asansörlü Taşıma","Eşya Depolama","Kamyonet Kiralama"]],
+ ["Mobilya & Cam","Ölçüye özel, sağlam işçilik.",["Marangoz","Mobilya Tamiri","Özel Mobilya","Gardırop","Kapı Yapımı","Döşemeci","Cam Balkon","PVC Pencere","Sineklik","Panjur","Alüminyum Doğrama","Cam Değişimi"]],
+ ["Oto & Araç","Yolda kalma, ustan hazır.",["Oto Çekici","Oto Tamir","Oto Elektrik","Oto Boya","Lastik Tamiri","Oto Kuaför","Akü Değişimi","Oto Cam"]],
+ ["Bahçe & Dış Mekan","Bahçen de bakım ister.",["Bahçe Bakımı","Ağaç Kesimi","Çim Ekimi","Peyzaj","Havuz Bakımı","Kamelya & Pergola"]]
+];
+const P=document.getElementById('panels');
+P.innerHTML=cats.map((c,i)=>`<div class="panel${i?'':' on'}"><h3>${c[0]}</h3><p>${c[1]}</p><div class="subs">${c[2].map((s,j)=>`<a href="#">${s}<small>${(i*7+j*13)%60+8} usta</small></a>`).join('')}</div><div class="foot"><span>Aradığını bulamadın mı? Ne lazım olduğunu yaz, uygun ustalar sana dönsün.</span><a class="btn btn-dark" href="#">Talep oluştur</a></div></div>`).join('');
+document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('on',i==b.dataset.t));});
+const tr=[["Kombi Bakımı","Kombi & Klima",100,"+%64"],["Petek Temizleme","Kombi & Klima",88,"+%52"],["Evden Eve Nakliyat","Nakliyat",76,"+%8"],["Boya Badana","Tadilat",70,"+%3"],["Ev Temizliği","Temizlik",66,"+%11"],
+ ["Su Kaçağı Tespiti","Tamir",58,"+%27"],["Çatı Tamiri","Tadilat",51,"+%40"],["Elektrikçi","Tamir",47,"+%5"],["Halı Yıkama","Temizlik",42,"+%18"],["Oto Çekici","Oto",35,"+%9"]];
+document.getElementById('trend').innerHTML=tr.map((t,i)=>`<a class="rank" href="#"><span class="n">${String(i+1).padStart(2,'0')}</span><div><b>${t[0]}</b><small style="color:var(--muted)">${t[1]}</small><div class="meter"><i style="width:${t[2]}%"></i></div></div><div class="ch">${t[3]}<small>bu hafta</small></div></a>`).join('');
+const ilce=document.getElementById('ilce'),ek=document.getElementById('ek');
+function sfx(){const w=ilce.value.toLowerCase(),v=[...w].reverse().find(c=>'aeıioöuü'.includes(c));
+  const front='eiöü'.includes(v),hard='fstkçşhp'.includes(w.slice(-1));ek.textContent="'"+(hard?'t':'d')+(front?'e':'a');}
+ilce.addEventListener('change',sfx);sfx();
+</script>
 </body>
 </html>
