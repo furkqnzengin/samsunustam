@@ -129,6 +129,39 @@ footer li{list-style:none;margin:6px 0;font-size:14px}
   .sec-head{flex-direction:column;align-items:flex-start}
   .fgrid{grid-template-columns:1fr}
 }
+
+/* Trend cards */
+.trend{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.tcard{background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line);transition:.2s}
+.tcard:hover{transform:translateY(-3px);border-color:var(--g500)}
+.timg{height:120px;display:grid;place-items:center;font-size:52px;background:linear-gradient(135deg,#d9f2e4,#a9dfc2)}
+.tcard:nth-child(3n+2) .timg{background:linear-gradient(135deg,#e6f4ec,#c5e8d4)}
+.tcard:nth-child(3n) .timg{background:linear-gradient(135deg,#cdeedd,#8fd3ae)}
+.tbody{padding:12px 14px 14px}
+.tbody b{display:block;color:var(--g700);font-size:15px;margin-bottom:4px}
+.tbody small{display:block;color:var(--muted);font-size:12.5px}
+/* All services */
+.allsvc{background:#fff}
+.groups{display:grid;grid-template-columns:repeat(5,1fr);gap:26px 22px}
+.grp h3{font-size:15px;color:var(--g900);margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid var(--g100)}
+.grp ul{list-style:none}
+.grp li{margin:5px 0;font-size:14px;color:var(--muted)}
+.grp li a:hover{color:var(--g600);text-decoration:underline}
+/* Popular */
+.popular{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 24px}
+.popular a{font-weight:500;text-decoration:underline;text-decoration-color:#b7d6c4;text-underline-offset:3px}
+.popular a:hover{color:var(--g600);text-decoration-color:var(--g600)}
+@media (max-width:960px){
+  .trend{grid-template-columns:repeat(3,1fr)}
+  .groups{grid-template-columns:repeat(3,1fr)}
+  .popular{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:640px){
+  .trend{grid-template-columns:repeat(2,1fr);gap:12px}
+  .timg{height:90px;font-size:40px}
+  .groups{grid-template-columns:1fr 1fr;gap:20px 16px}
+  .popular{grid-template-columns:1fr 1fr;font-size:14px}
+}
 </style>
 </head>
 <body>
@@ -149,23 +182,41 @@ footer li{list-style:none;margin:6px 0;font-size:14px}
     <label class="field">📍 <select><option>Tüm İlçeler</option><option>Atakum</option><option>İlkadım</option><option>Canik</option><option>Tekkeköy</option><option>Bafra</option><option>Çarşamba</option></select></label>
     <button class="btn btn-accent">Usta Bul</button>
   </form>
-  <div class="stats"><div><b>1.200+</b>Kayıtlı Usta</div><div><b>45</b>Meslek Dalı</div><div><b>17</b>İlçe</div><div><b>8.500+</b>Müşteri Yorumu</div></div>
+  <div class="stats"><div><b>1.200+</b>Kayıtlı Usta</div><div><b>120+</b>Hizmet</div><div><b>17</b>İlçe</div><div><b>8.500+</b>Müşteri Yorumu</div></div>
 </div></div>
 
 <section class="cats"><div class="wrap">
   <div class="cat-grid">
-    <a class="cat" href="#"><div class="ic">⚡</div><b>Elektrikçi</b><small>184 usta</small></a>
-    <a class="cat" href="#"><div class="ic">🚰</div><b>Su Tesisatçısı</b><small>142 usta</small></a>
-    <a class="cat" href="#"><div class="ic">🔥</div><b>Kombi Servisi</b><small>96 usta</small></a>
+    <a class="cat" href="#"><div class="ic">🏠</div><b>Tadilat & Dekorasyon</b><small>214 usta</small></a>
+    <a class="cat" href="#"><div class="ic">🔧</div><b>Montaj & Tamir</b><small>286 usta</small></a>
+    <a class="cat" href="#"><div class="ic">🧽</div><b>Temizlik</b><small>173 usta</small></a>
+    <a class="cat" href="#"><div class="ic">🚚</div><b>Nakliyat</b><small>98 usta</small></a>
+    <a class="cat" href="#"><div class="ic">🔥</div><b>Kombi & Klima</b><small>159 usta</small></a>
+    <a class="cat" href="#"><div class="ic">⚡</div><b>Elektrik</b><small>184 usta</small></a>
+    <a class="cat" href="#"><div class="ic">🚰</div><b>Su Tesisatı</b><small>142 usta</small></a>
     <a class="cat" href="#"><div class="ic">🎨</div><b>Boya Badana</b><small>121 usta</small></a>
-    <a class="cat" href="#"><div class="ic">🪚</div><b>Marangoz</b><small>74 usta</small></a>
-    <a class="cat" href="#"><div class="ic">❄️</div><b>Klima Servisi</b><small>63 usta</small></a>
-    <a class="cat" href="#"><div class="ic">🔑</div><b>Çilingir</b><small>38 usta</small></a>
-    <a class="cat" href="#"><div class="ic">🧱</div><b>Fayans Seramik</b><small>89 usta</small></a>
-    <a class="cat" href="#"><div class="ic">🚗</div><b>Oto Tamir</b><small>156 usta</small></a>
-    <a class="cat" href="#"><div class="ic">🪟</div><b>PVC & Cam</b><small>52 usta</small></a>
-    <a class="cat" href="#"><div class="ic">📺</div><b>Beyaz Eşya</b><small>67 usta</small></a>
-    <a class="cat" href="#"><div class="ic">➕</div><b>Tümünü Gör</b><small>45 kategori</small></a>
+    <a class="cat" href="#"><div class="ic">🪚</div><b>Mobilya & Marangoz</b><small>87 usta</small></a>
+    <a class="cat" href="#"><div class="ic">🪟</div><b>Cam, PVC & Alüminyum</b><small>64 usta</small></a>
+    <a class="cat" href="#"><div class="ic">🚗</div><b>Oto & Araç</b><small>156 usta</small></a>
+    <a class="cat" href="#"><div class="ic">➕</div><b>Tüm Hizmetler</b><small>120+ hizmet</small></a>
+  </div>
+</div></section>
+
+<section style="padding-top:44px"><div class="wrap">
+  <div class="sec-head"><div><h2>Haftanın Trend Hizmetleri</h2><p>Samsun'da bu hafta en çok aranan hizmetler</p></div><a href="#">Tümünü gör →</a></div>
+  <div class="trend">
+    <a class="tcard" href="#"><div class="timg">🚚</div><div class="tbody"><b>Evden Eve Nakliyat</b><small>👷 68 usta</small><small>⭐ 4.9 (1.240 yorum)</small></div></a>
+    <a class="tcard" href="#"><div class="timg">🎨</div><div class="tbody"><b>Boya Badana</b><small>👷 121 usta</small><small>⭐ 4.8 (2.310 yorum)</small></div></a>
+    <a class="tcard" href="#"><div class="timg">🧽</div><div class="tbody"><b>Ev Temizliği</b><small>👷 96 usta</small><small>⭐ 4.7 (1.980 yorum)</small></div></a>
+    <a class="tcard" href="#"><div class="timg">🌡️</div><div class="tbody"><b>Kombi Petek Temizleme</b><small>👷 54 usta</small><small>⭐ 4.9 (870 yorum)</small></div></a>
+    <a class="tcard" href="#"><div class="timg">🏚️</div><div class="tbody"><b>Boş Ev Temizliği</b><small>👷 47 usta</small><small>⭐ 4.7 (640 yorum)</small></div></a>
+    <a class="tcard" href="#"><div class="timg">🧱</div><div class="tbody"><b>Fayans Döşeme</b><small>👷 89 usta</small><small>⭐ 4.7 (910 yorum)</small></div></a>
+    <a class="tcard" href="#"><div class="timg">🛋️</div><div class="tbody"><b>Koltuk Taşıma</b><small>👷 38 usta</small><small>⭐ 4.9 (420 yorum)</small></div></a>
+    <a class="tcard" href="#"><div class="timg">🍳</div><div class="tbody"><b>Mutfak Dolabı Yapımı</b><small>👷 41 usta</small><small>⭐ 4.6 (380 yorum)</small></div></a>
+    <a class="tcard" href="#"><div class="timg">📦</div><div class="tbody"><b>Eşya Taşıma</b><small>👷 52 usta</small><small>⭐ 4.9 (760 yorum)</small></div></a>
+    <a class="tcard" href="#"><div class="timg">🛻</div><div class="tbody"><b>Oto Çekici</b><small>👷 29 usta</small><small>⭐ 4.9 (510 yorum)</small></div></a>
+    <a class="tcard" href="#"><div class="timg">🔥</div><div class="tbody"><b>Kombi Tamiri</b><small>👷 73 usta</small><small>⭐ 4.9 (1.120 yorum)</small></div></a>
+    <a class="tcard" href="#"><div class="timg">❄️</div><div class="tbody"><b>Klima Servisi</b><small>👷 63 usta</small><small>⭐ 4.8 (690 yorum)</small></div></a>
   </div>
 </div></section>
 
@@ -184,6 +235,27 @@ footer li{list-style:none;margin:6px 0;font-size:14px}
   <div class="chips">
     <a class="chip" href="#">Atakum<small>312</small></a><a class="chip" href="#">İlkadım<small>298</small></a><a class="chip" href="#">Canik<small>154</small></a><a class="chip" href="#">Tekkeköy<small>87</small></a><a class="chip" href="#">Bafra<small>121</small></a><a class="chip" href="#">Çarşamba<small>109</small></a><a class="chip" href="#">Terme<small>48</small></a><a class="chip" href="#">Vezirköprü<small>36</small></a><a class="chip" href="#">Havza<small>29</small></a><a class="chip" href="#">Kavak<small>14</small></a><a class="chip" href="#">Ladik<small>17</small></a><a class="chip" href="#">Alaçam<small>19</small></a><a class="chip" href="#">19 Mayıs<small>22</small></a><a class="chip" href="#">Asarcık<small>6</small></a><a class="chip" href="#">Ayvacık<small>8</small></a><a class="chip" href="#">Salıpazarı<small>9</small></a><a class="chip" href="#">Yakakent<small>7</small></a>
   </div>
+</div></section>
+
+<section class="allsvc"><div class="wrap">
+  <div class="sec-head"><div><h2>Tüm Hizmetler</h2><p>Aradığın hizmeti kategorisinden bul</p></div></div>
+  <div class="groups">
+    <div class="grp"><h3>🏠 Tadilat & Dekorasyon</h3><ul><li><a href="#">Fayans Döşeme</a></li><li><a href="#">Mutfak Dolabı</a></li><li><a href="#">Mutfak Dekorasyon</a></li><li><a href="#">Banyo Tadilatı</a></li><li><a href="#">Duşakabin</a></li><li><a href="#">Alçı & Kartonpiyer</a></li><li><a href="#">Asma Tavan</a></li><li><a href="#">Laminat Parke</a></li><li><a href="#">Duvar Kağıdı</a></li><li><a href="#">Duvar Dekorasyon</a></li><li><a href="#">İç Mimar</a></li><li><a href="#">Anahtar Teslim Tadilat</a></li></ul></div>
+    <div class="grp"><h3>🔧 Montaj & Tamir</h3><ul><li><a href="#">Elektrikçi</a></li><li><a href="#">Su Tesisatçısı</a></li><li><a href="#">Tıkanıklık Açma</a></li><li><a href="#">Su Kaçağı Tespiti</a></li><li><a href="#">Beyaz Eşya Servisi</a></li><li><a href="#">Televizyon Tamiri</a></li><li><a href="#">Uydu Kurulumu</a></li><li><a href="#">Avize Montajı</a></li><li><a href="#">Mobilya Montajı</a></li><li><a href="#">Kapı & Kilit Tamiri</a></li><li><a href="#">Çilingir</a></li><li><a href="#">Güvenlik Kamerası</a></li></ul></div>
+    <div class="grp"><h3>🔥 Kombi & Klima</h3><ul><li><a href="#">Kombi Servisi</a></li><li><a href="#">Kombi Tamiri</a></li><li><a href="#">Kombi Bakımı</a></li><li><a href="#">Kombi Petek Temizleme</a></li><li><a href="#">Doğalgaz Tesisatı</a></li><li><a href="#">Klima Servisi</a></li><li><a href="#">Klima Montajı</a></li><li><a href="#">Demirdöküm Kombi Servisi</a></li><li><a href="#">ECA Kombi Servisi</a></li><li><a href="#">Vaillant Kombi Servisi</a></li><li><a href="#">Baymak Kombi Servisi</a></li><li><a href="#">Bosch Kombi Servisi</a></li></ul></div>
+    <div class="grp"><h3>🧽 Temizlik</h3><ul><li><a href="#">Ev Temizliği</a></li><li><a href="#">Boş Ev Temizliği</a></li><li><a href="#">İnşaat Sonrası Temizlik</a></li><li><a href="#">Ofis Temizliği</a></li><li><a href="#">Merdiven Temizliği</a></li><li><a href="#">Halı Yıkama</a></li><li><a href="#">Koltuk Yıkama</a></li><li><a href="#">Yatak Yıkama</a></li><li><a href="#">Cam Temizliği</a></li><li><a href="#">Dış Cephe Temizliği</a></li><li><a href="#">İlaçlama</a></li><li><a href="#">Su Deposu Temizliği</a></li></ul></div>
+    <div class="grp"><h3>🚚 Nakliyat</h3><ul><li><a href="#">Evden Eve Nakliyat</a></li><li><a href="#">Şehirler Arası Nakliyat</a></li><li><a href="#">Parça Eşya Taşıma</a></li><li><a href="#">Koltuk Taşıma</a></li><li><a href="#">Beyaz Eşya Taşıma</a></li><li><a href="#">Ofis Taşıma</a></li><li><a href="#">Asansörlü Taşıma</a></li><li><a href="#">Eşya Depolama</a></li><li><a href="#">Kamyonet Kiralama</a></li></ul></div>
+    <div class="grp"><h3>🎨 Boya & Yalıtım</h3><ul><li><a href="#">Boyacı (Boya Badana)</a></li><li><a href="#">Dış Cephe Boyası</a></li><li><a href="#">Mantolama</a></li><li><a href="#">Çatı Tamiri</a></li><li><a href="#">Su Yalıtımı</a></li><li><a href="#">İzolasyon</a></li></ul></div>
+    <div class="grp"><h3>🪚 Mobilya & Marangoz</h3><ul><li><a href="#">Marangoz</a></li><li><a href="#">Mobilya Tamiri</a></li><li><a href="#">Özel Mobilya Yapımı</a></li><li><a href="#">Gardırop Yapımı</a></li><li><a href="#">Kapı Yapımı</a></li><li><a href="#">Döşemeci</a></li></ul></div>
+    <div class="grp"><h3>🪟 Cam, PVC & Alüminyum</h3><ul><li><a href="#">Cam Balkon</a></li><li><a href="#">PVC Pencere</a></li><li><a href="#">Sineklik</a></li><li><a href="#">Panjur & Kepenk</a></li><li><a href="#">Alüminyum Doğrama</a></li><li><a href="#">Cam Değişimi</a></li></ul></div>
+    <div class="grp"><h3>🚗 Oto & Araç</h3><ul><li><a href="#">Oto Çekici</a></li><li><a href="#">Oto Tamir</a></li><li><a href="#">Oto Elektrik</a></li><li><a href="#">Oto Boya</a></li><li><a href="#">Lastik Tamiri</a></li><li><a href="#">Oto Kuaför</a></li></ul></div>
+    <div class="grp"><h3>🌿 Bahçe & Dış Mekan</h3><ul><li><a href="#">Bahçe Bakımı</a></li><li><a href="#">Ağaç Kesimi</a></li><li><a href="#">Çim Ekimi</a></li><li><a href="#">Peyzaj</a></li><li><a href="#">Havuz Bakımı</a></li><li><a href="#">Kamelya & Pergola</a></li></ul></div>
+  </div>
+</div></section>
+
+<section style="padding-bottom:20px"><div class="wrap">
+  <div class="sec-head"><div><h2>Popüler Hizmetler</h2></div></div>
+  <div class="popular"><a href="#">Boş Ev Temizliği</a><a href="#">Boyacı (Boya Badana Ustası)</a><a href="#">Cam Balkon</a><a href="#">Demirdöküm Kombi Servisi</a><a href="#">Duşakabin</a><a href="#">Duvar Dekorasyon</a><a href="#">ECA Kombi Servisi</a><a href="#">Elektrikçi</a><a href="#">Parça Eşya Taşıma</a><a href="#">Ev Dekorasyon</a><a href="#">Ev Temizliği</a><a href="#">Evden Eve Nakliyat</a><a href="#">Fayans Döşeme</a><a href="#">Halı Yıkama</a><a href="#">İç Mimar</a><a href="#">Su Tesisatçısı</a><a href="#">Klima Servisi</a><a href="#">Koltuk Yıkama</a><a href="#">Kombi Servisi</a><a href="#">Mutfak Dekorasyon</a><a href="#">Mutfak Dolabı</a><a href="#">Nakliye</a><a href="#">Çilingir</a><a href="#">Vaillant Kombi Servisi</a><a href="#">Atakum Elektrikçi</a><a href="#">İlkadım Tesisatçı</a><a href="#">Atakum Kombi Servisi</a><a href="#">Canik Boyacı</a><a href="#">Bafra Nakliyat</a><a href="#">Çarşamba Oto Tamir</a></div>
 </div></section>
 
 <section><div class="wrap">
