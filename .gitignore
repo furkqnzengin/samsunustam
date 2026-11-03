@@ -1,0 +1,6 @@
+config.php
+uploads/*
+!uploads/.htaccess
+!uploads/belgeler/
+uploads/belgeler/*
+!uploads/belgeler/.htaccess

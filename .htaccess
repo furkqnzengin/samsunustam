@@ -1,0 +1,13 @@
+# Samsun Ustam - Apache ayarları
+Options -Indexes
+DirectoryIndex index.php
+
+# Gizli dosyalara erişimi engelle
+<FilesMatch "^(config\.php|config\.sample\.php|README\.md|\.git.*)$">
+  Require all denied
+</FilesMatch>
+
+# HTTPS'e yönlendirme (SSL kurulduktan sonra aşağıdaki 3 satırın başındaki # işaretini kaldırın)
+# RewriteEngine On
+# RewriteCond %{HTTPS} off
+# RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
