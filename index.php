@@ -66,17 +66,15 @@ site_basla();
     <p class="lead">Evdeki arızadan sanayideki tornacıya, tır servisinden kombiciye; Samsun'un güvenilir ustalarını bul. Yorumları oku, tek dokunuşla ara.</p>
     <form class="ask" method="get" action="<?= url('ara.php') ?>">
       <div class="sent">Bana bir
-        <select name="h" aria-label="Hizmet">
-          <?php foreach ($populerH as $h): ?><option value="<?= e($h['slug']) ?>"><?= e(cumle_ici($h['ad'])) ?></option><?php endforeach; ?>
-          <?php foreach ($kategoriler as $k): ?><optgroup label="<?= e($k['ad']) ?>">
-            <?php foreach ($hizmetByKat[$k['id']] ?? [] as $h): ?><option value="<?= e($h['slug']) ?>"><?= e(cumle_ici($h['ad'])) ?></option><?php endforeach; ?>
-          </optgroup><?php endforeach; ?>
-        </select>
+        <input id="hizmet" list="hizmet-dl" autocomplete="off" placeholder="elektrikçi" aria-label="Ne lazım? Yaz ya da seç" enterkeyhint="search">
         lazım,
-        <select name="i" id="ilce" aria-label="İlçe">
-          <?php foreach ($ilceler as $i): ?><option value="<?= e($i['slug']) ?>"><?= e($i['ad']) ?></option><?php endforeach; ?>
-        </select><span id="ek">'da</span>.
+        <span class="nowrap"><input id="ilce" list="ilce-dl" autocomplete="off" placeholder="Samsun" aria-label="İlçe"><span id="ek">'da</span>.</span>
       </div>
+      <input type="hidden" name="h" id="h_val"><input type="hidden" name="i" id="i_val"><input type="hidden" name="q" id="q_val">
+      <datalist id="hizmet-dl">
+        <?php $goster = []; foreach ([...$populerH, ...$hizmetler] as $h): if (isset($goster[$h['slug']])) continue; $goster[$h['slug']] = 1; ?><option value="<?= e(cumle_ici($h['ad'])) ?>" data-slug="<?= e($h['slug']) ?>"></option><?php endforeach; ?>
+      </datalist>
+      <datalist id="ilce-dl"><?php foreach ($ilceler as $i): ?><option value="<?= e($i['ad']) ?>" data-slug="<?= e($i['slug']) ?>"></option><?php endforeach; ?></datalist>
       <div class="row">
         <div class="quick">
           <?php foreach (['kombi-bakimi', 'tornaci', 'tir-bakim-servisi', 'arac-periyodik-bakim'] as $s): if (isset($hizmetBySlug[$s])): ?>
@@ -201,12 +199,24 @@ document.getElementById('tabs').addEventListener('click', e => {
   document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x === b));
   document.querySelectorAll('.explorer .panel').forEach((p, i) => p.classList.toggle('on', i == b.dataset.t));
 });
-const ilce = document.getElementById('ilce'), ek = document.getElementById('ek');
+const ilce = document.getElementById('ilce'), ek = document.getElementById('ek'), hiz = document.getElementById('hizmet');
+const kucuk = t => t.replace(/I/g, 'ı').replace(/İ/g, 'i').toLocaleLowerCase('tr-TR').trim();
+const harita = id => { const m = {}; document.querySelectorAll('#' + id + ' option').forEach(o => m[kucuk(o.value)] = o.dataset.slug); return m; };
+const hMap = harita('hizmet-dl'), iMap = harita('ilce-dl');
 function sfx() {
-  const ad = ilce.options[ilce.selectedIndex].text, w = ad.replace(/I/g, 'ı').replace(/İ/g, 'i').toLowerCase();
+  const w = kucuk(ilce.value || ilce.placeholder);
   const v = [...w].reverse().find(c => 'aeıioöuü'.includes(c)) || 'a';
   ek.textContent = "'" + ('fstkçşhp'.includes(w.slice(-1)) ? 't' : 'd') + ('eiöü'.includes(v) ? 'e' : 'a');
 }
-ilce.addEventListener('change', sfx); sfx();
+function boyut(el) { el.style.width = Math.max(4, (el.value || el.placeholder).length + 1.5) + 'ch'; }
+[hiz, ilce].forEach(el => { el.addEventListener('input', () => { boyut(el); if (el === ilce) sfx(); }); boyut(el); });
+sfx();
+document.querySelector('form.ask').addEventListener('submit', () => {
+  const h = kucuk(hiz.value), i = kucuk(ilce.value);
+  document.getElementById('h_val').value = hMap[h] || '';
+  document.getElementById('q_val').value = h && !hMap[h] ? hiz.value.trim() : '';
+  document.getElementById('i_val').value = iMap[i] || '';
+  document.querySelectorAll('form.ask input[type=hidden]').forEach(x => x.disabled = !x.value);
+});
 </script>
 <?php site_bitir();

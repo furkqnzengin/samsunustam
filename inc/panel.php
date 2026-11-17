@@ -9,7 +9,14 @@ function panel_basla(string $rol, string $aktif, string $baslik, string $alt = '
     if ($rol === 'usta') {
         $usta = row('SELECT id, slug, ad_soyad, foto FROM ustalar WHERE kullanici_id = ?', [$k['id']]);
         $yeni = (int)val("SELECT COUNT(*) FROM talepler WHERE usta_id = ? AND durum = 'yeni'", [$usta['id']]);
+        $acik = 0;
+        try { $acik = (int)val("SELECT COUNT(*) FROM servisler WHERE usta_id = ? AND durum = 'hazir'", [$usta['id']]); } catch (Throwable) {}
         $menu = [
+            ['Atölyem', [
+                ['servis.php', '🛠️', 'Servis Takip', $acik],
+                ['servis-kayit.php', '➕', 'Yeni Kayıt', 0],
+                ['kasa.php', '💰', 'Gelir - Gider', 0],
+            ]],
             ['Usta Paneli', [
                 ['index.php', '🏠', 'Panelim', 0],
                 ['profil.php', '👤', 'Profilim', 0],
@@ -22,7 +29,7 @@ function panel_basla(string $rol, string $aktif, string $baslik, string $alt = '
             ]],
         ];
         $alt_link = ['../usta.php?u=' . $usta['slug'], '↗ Profilimi Görüntüle'];
-        $tab = [['index.php', '🏠', 'Panel'], ['talepler.php', '💬', 'Talepler'], ['yorumlar.php', '⭐', 'Yorumlar'], ['profil.php', '👤', 'Profil'], ['ayarlar.php', '⚙️', 'Hesap']];
+        $tab = [['index.php', '🏠', 'Panel'], ['servis.php', '🛠️', 'Servis'], ['servis-kayit.php', '➕', 'Yeni'], ['kasa.php', '💰', 'Kasa']];
         $avatar = $usta['foto'] ? '<img class="av" src="' . e(upload_url($usta['foto'])) . '" alt="">' : '<div class="av">' . e(initials($usta['ad_soyad'])) . '</div>';
         $isim = $usta['ad_soyad'];
     } else {
@@ -43,7 +50,7 @@ function panel_basla(string $rol, string $aktif, string $baslik, string $alt = '
             ]],
         ];
         $alt_link = ['../', '↗ Siteyi Görüntüle'];
-        $tab = [['index.php', '📊', 'Özet'], ['ustalar.php?durum=beklemede', '⏳', 'Onay'], ['ustalar.php', '👷', 'Ustalar'], ['yorumlar.php', '⭐', 'Yorumlar'], ['ayarlar.php', '⚙️', 'Ayarlar']];
+        $tab = [['index.php', '📊', 'Özet'], ['ustalar.php?durum=beklemede', '⏳', 'Onay'], ['ustalar.php', '👷', 'Ustalar'], ['yorumlar.php', '⭐', 'Yorumlar']];
         $avatar = '<div class="av">' . e(initials($k['ad'])) . '</div>';
         $isim = $k['ad'];
     }
@@ -78,16 +85,21 @@ function panel_basla(string $rol, string $aktif, string $baslik, string $alt = '
     </div>
     <?= flash_html() ?>
 <?php
-    $GLOBALS['__tabbar'] = [$tab, $aktif];
+    $GLOBALS['__tabbar'] = [$tab, $aktif, $menu, $alt_link, $cikis];
 }
 
 function panel_bitir(): void
 {
-    [$tab, $aktif] = $GLOBALS['__tabbar'];
+    [$tab, $aktif, $menu, $alt_link, $cikis] = $GLOBALS['__tabbar'];
     ?>
   </main>
 </div>
-<nav class="tabbar"><?php foreach ($tab as [$href, $ic, $ad]): ?><a class="<?= $aktif === $href ? 'on' : '' ?>" href="<?= e($href) ?>"><span><?= $ic ?></span><?= e($ad) ?></a><?php endforeach; ?></nav>
+<nav class="tabbar"><?php foreach ($tab as [$href, $ic, $ad]): ?><a class="<?= $aktif === $href ? 'on' : '' ?>" href="<?= e($href) ?>"><span><?= $ic ?></span><?= e($ad) ?></a><?php endforeach; ?>
+  <a href="#" onclick="document.body.classList.toggle('msheet-acik');return false"><span>☰</span>Menü</a></nav>
+<div class="msheet" onclick="if(event.target===this)document.body.classList.remove('msheet-acik')"><div class="msheet-in">
+  <?php foreach ($menu as [$grup, $items]): ?><div class="tag"><?= e($grup) ?></div><?php foreach ($items as [$href, $ic, $ad, $cnt]): ?><a class="<?= $aktif === $href ? 'on' : '' ?>" href="<?= e($href) ?>"><?= $ic ?> <?= e($ad) ?><?= $cnt ? '<span class="cnt">' . $cnt . '</span>' : '' ?></a><?php endforeach; ?><?php endforeach; ?>
+  <div class="tag">Diğer</div><a href="<?= e($alt_link[0]) ?>" target="_blank"><?= e($alt_link[1]) ?></a><a href="<?= e($cikis) ?>">🚪 Çıkış Yap</a>
+</div></div>
 </body>
 </html>
 <?php

@@ -11,12 +11,20 @@ Samsun'daki ustaları listeleyen yerel usta rehberi. Düz PHP + MySQL ile yazıl
 - Yorum yazma (yönetici onayından sonra yayınlanır) ve ustaya iş talebi gönderme
 
 **Usta paneli** (`/usta`)
-- Kayıt ol → yönetici onayı → yayına çıkış
+- Kayıt ol (ustalık belgesi zorunlu) → yönetici onayı → yayına çıkış
 - Profil, hizmetler, ilçeler, profil fotoğrafı, ustalık belgesi
 - İş fotoğrafları (en fazla 12)
 - Gelen iş talepleri, yorumlara yanıt
 - Görüntülenme / arama / WhatsApp istatistikleri
 - Dükkan / atölye adresi (profilde "Haritada aç" linkiyle)
+
+**Servis takip ve gelir-gider** (`/usta/servis.php`, `/usta/kasa.php`)
+- Sektöre özel kayıt formu: oto, ağır vasıta, sanayi/atölye iş emri, cihaz servisi, yerinde iş, nakliyat
+- Plaka / seri no ile geçmiş kayıt bulma ve müşteri bilgisini otomatik doldurma
+- Kontrol listesi, işçilik/parça kalemleri, indirim, KDV, tahsilatlar, kalan borç
+- İşlem öncesi/sonrası fotoğraflar
+- Müşteriye yazdırılabilir rapor ve WhatsApp ile gönderilen rapor linki (`rapor.php`)
+- Aylık gelir-gider, alacak listesi, Excel'e (CSV) aktarma
 
 **Yönetim paneli** (`/yonetim`)
 - Usta başvurularını onaylama / reddetme, askıya alma, silme

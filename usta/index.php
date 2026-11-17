@@ -1,6 +1,7 @@
 <?php
 require __DIR__ . '/../inc/init.php';
 require __DIR__ . '/../inc/panel.php';
+require __DIR__ . '/../inc/servis.php';
 $u = aktif_usta();
 $uid = (int)$u['id'];
 
@@ -29,6 +30,14 @@ $yuzde = (int)round($tamam / count($adimlar) * 100);
 $talepler = rows('SELECT t.*, i.ad AS ilce FROM talepler t LEFT JOIN ilceler i ON i.id = t.ilce_id WHERE t.usta_id = ? ORDER BY t.id DESC LIMIT 4', [$uid]);
 $yorumlar = rows("SELECT * FROM yorumlar WHERE usta_id = ? AND durum = 'yayinda' ORDER BY id DESC LIMIT 3", [$uid]);
 
+$tutarSql = servis_tutar_sql();
+$odenenSql = servis_odenen_sql();
+$atolye = row("SELECT SUM(s.durum IN ('kabul','islemde','parca','hazir')) acik, SUM(s.durum = 'hazir') hazir,
+    SUM(CASE WHEN s.durum <> 'iptal' THEN $tutarSql - $odenenSql ELSE 0 END) alacak FROM servisler s WHERE s.usta_id = ?", [$uid]);
+$ayTahsilat = (float)val("SELECT COALESCE(SUM(o.tutar),0) FROM servis_odemeleri o JOIN servisler s ON s.id = o.servis_id WHERE s.usta_id = ? AND o.tarih >= DATE_FORMAT(CURDATE(), '%Y-%m-01')", [$uid]);
+$ayGider = (float)val("SELECT COALESCE(SUM(tutar),0) FROM kasa WHERE usta_id = ? AND tur = 'gider' AND tarih >= DATE_FORMAT(CURDATE(), '%Y-%m-01')", [$uid]);
+$sektorTanim = sektorler()[usta_sektor($u)];
+
 $ilkAd = explode(' ', $u['ad_soyad'])[0];
 panel_basla('usta', 'index.php', "Hoş geldin, $ilkAd Usta 👋", $u['durum'] === 'aktif' ? 'Bu hafta profilin <b>' . sayi($hafta) . '</b> kez görüntülendi.' : '');
 ?>
@@ -39,6 +48,16 @@ panel_basla('usta', 'index.php', "Hoş geldin, $ilkAd Usta 👋", $u['durum'] ==
 <?php elseif ($u['durum'] === 'reddedildi'): ?>
   <div class="notice n-red"><b>Başvurun onaylanmadı.</b> <?= $u['red_nedeni'] ? 'Neden: ' . e($u['red_nedeni']) . '. ' : '' ?>Profilini düzenleyip tekrar başvurabilirsin. <a href="profil.php">Profili düzenle →</a></div>
 <?php endif; ?>
+
+<div class="card atolye">
+  <h2><?= $sektorTanim['ikon'] ?> Atölyem <a class="btn btn-main" style="color:#fff" href="servis-kayit.php">+ Yeni <?= e(tr_lower($sektorTanim['kayit'])) ?></a></h2>
+  <div class="mini">
+    <a href="servis.php"><b><?= (int)$atolye['acik'] ?></b><small>açık kayıt</small></a>
+    <a href="servis.php?durum=hazir"><b><?= (int)$atolye['hazir'] ?></b><small>teslime hazır</small></a>
+    <a href="kasa.php"><b><?= para($ayTahsilat - $ayGider) ?></b><small>bu ay net</small></a>
+    <a href="servis.php?durum=borclu"><b class="<?= (float)$atolye['alacak'] > 0 ? 'down' : '' ?>"><?= para(max(0, (float)$atolye['alacak'])) ?></b><small>alacak</small></a>
+  </div>
+</div>
 
 <div class="stats">
   <div class="stat"><div class="ic">👁️</div><div><small>Profil Görüntülenme</small><b><?= sayi($stat['goruntuleme'][0]) ?></b><?= degisim(...$stat['goruntuleme']) ?> <small class="inline">son 30 gün</small></div></div>

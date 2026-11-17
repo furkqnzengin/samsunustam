@@ -23,16 +23,9 @@ if (is_post()) {
     if ($islem === 'belge') {
         $f = $_FILES['belge'] ?? null;
         try {
-            if (!$f || $f['error'] !== UPLOAD_ERR_OK) throw new RuntimeException('Dosya seçin.');
-            if ($f['size'] > 8 * 1024 * 1024) throw new RuntimeException('Belge en fazla 8 MB olabilir.');
-            $mime = (new finfo(FILEINFO_MIME_TYPE))->file($f['tmp_name']);
-            $ext = ['application/pdf' => 'pdf', 'image/jpeg' => 'jpg', 'image/png' => 'png'][$mime] ?? null;
-            if (!$ext) throw new RuntimeException('Belge PDF, JPG veya PNG olmalı.');
-            $dir = ROOT . '/uploads/belgeler';
-            if (!is_dir($dir)) mkdir($dir, 0755, true);
-            $ad = 'belgeler/' . $uid . '-' . bin2hex(random_bytes(10)) . '.' . $ext;
-            if (!move_uploaded_file($f['tmp_name'], ROOT . '/uploads/' . $ad)) throw new RuntimeException('Belge kaydedilemedi.');
+            $ad = belge_kaydet($f, belge_kontrol($f), $uid);
             dosya_sil($u['belge_dosya']);
+            if ($u['belgeli']) q('UPDATE ustalar SET belgeli = 0 WHERE id = ?', [$uid]); // yeni belge tekrar kontrol edilir
             q('UPDATE ustalar SET belge_dosya = ? WHERE id = ?', [$ad, $uid]);
             flash('Belgen yüklendi. Yönetici kontrol ettikten sonra profilinde "Belgeli" rozeti görünecek.');
         } catch (RuntimeException $ex) {

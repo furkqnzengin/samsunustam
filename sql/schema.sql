@@ -66,6 +66,8 @@ CREATE TABLE IF NOT EXISTS ustalar (
   foto VARCHAR(255) NULL,
   durum ENUM('beklemede','aktif','askida','reddedildi') NOT NULL DEFAULT 'beklemede',
   red_nedeni VARCHAR(255) NULL,
+  servis_sektor VARCHAR(20) NULL,
+  rapor_notu TEXT NULL,
   paket_id INT UNSIGNED NULL,
   paket_bitis DATE NULL,
   puan DECIMAL(2,1) NOT NULL DEFAULT 0,
@@ -161,4 +163,81 @@ CREATE TABLE IF NOT EXISTS aramalar (
 CREATE TABLE IF NOT EXISTS ayarlar (
   anahtar VARCHAR(60) PRIMARY KEY,
   deger TEXT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+-- ===== Servis takip (usta paneli) =====
+CREATE TABLE IF NOT EXISTS servisler (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  usta_id INT UNSIGNED NOT NULL,
+  no INT UNSIGNED NOT NULL,
+  sektor VARCHAR(20) NOT NULL,
+  musteri_ad VARCHAR(100) NOT NULL,
+  musteri_tel VARCHAR(20) NULL,
+  musteri_firma VARCHAR(120) NULL,
+  anahtar VARCHAR(60) NULL,
+  baslik VARCHAR(200) NOT NULL,
+  ozel TEXT NULL,
+  sikayet TEXT NULL,
+  yapilan TEXT NULL,
+  kontrol TEXT NULL,
+  durum ENUM('kabul','islemde','parca','hazir','teslim','iptal') NOT NULL DEFAULT 'kabul',
+  giris_tarihi DATETIME NOT NULL,
+  tahmini_teslim DATE NULL,
+  teslim_tarihi DATETIME NULL,
+  sonraki_bakim VARCHAR(120) NULL,
+  garanti VARCHAR(120) NULL,
+  iskonto DECIMAL(12,2) NOT NULL DEFAULT 0,
+  kdv TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  notlar TEXT NULL,
+  rapor_token CHAR(32) NOT NULL,
+  olusturma DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  guncelleme DATETIME NULL,
+  UNIQUE KEY (rapor_token),
+  INDEX (usta_id, durum),
+  INDEX (usta_id, anahtar),
+  FOREIGN KEY (usta_id) REFERENCES ustalar(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+CREATE TABLE IF NOT EXISTS servis_kalemleri (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  servis_id INT UNSIGNED NOT NULL,
+  tur ENUM('iscilik','parca','diger') NOT NULL DEFAULT 'iscilik',
+  aciklama VARCHAR(200) NOT NULL,
+  adet DECIMAL(10,2) NOT NULL DEFAULT 1,
+  birim_fiyat DECIMAL(12,2) NOT NULL DEFAULT 0,
+  sira SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+  FOREIGN KEY (servis_id) REFERENCES servisler(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+CREATE TABLE IF NOT EXISTS servis_odemeleri (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  servis_id INT UNSIGNED NOT NULL,
+  tutar DECIMAL(12,2) NOT NULL,
+  yontem ENUM('nakit','kart','havale','diger') NOT NULL DEFAULT 'nakit',
+  tarih DATE NOT NULL,
+  aciklama VARCHAR(200) NULL,
+  FOREIGN KEY (servis_id) REFERENCES servisler(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+CREATE TABLE IF NOT EXISTS servis_fotolari (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  servis_id INT UNSIGNED NOT NULL,
+  dosya VARCHAR(255) NOT NULL,
+  etiket ENUM('once','sonra','diger') NOT NULL DEFAULT 'diger',
+  olusturma DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (servis_id) REFERENCES servisler(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+-- Ustanın elle girdiği gelir ve giderler (servis tahsilatları servis_odemeleri tablosunda)
+CREATE TABLE IF NOT EXISTS kasa (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  usta_id INT UNSIGNED NOT NULL,
+  tur ENUM('gelir','gider') NOT NULL,
+  kategori VARCHAR(60) NOT NULL,
+  tutar DECIMAL(12,2) NOT NULL,
+  tarih DATE NOT NULL,
+  aciklama VARCHAR(200) NULL,
+  olusturma DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX (usta_id, tarih),
+  FOREIGN KEY (usta_id) REFERENCES ustalar(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;

@@ -33,9 +33,9 @@ if ($ilce) {
     $params[] = $ilce['id'];
 }
 if ($metin !== '') {
-    $where[] = '(u.ad_soyad LIKE ? OR u.meslek LIKE ? OR u.hakkinda LIKE ?)';
+    $where[] = '(u.ad_soyad LIKE ? OR u.meslek LIKE ? OR u.hakkinda LIKE ? OR EXISTS (SELECT 1 FROM usta_hizmet uh2 JOIN hizmetler h2 ON h2.id = uh2.hizmet_id WHERE uh2.usta_id = u.id AND h2.ad LIKE ?))';
     $like = '%' . $metin . '%';
-    array_push($params, $like, $like, $like);
+    array_push($params, $like, $like, $like, $like);
 }
 $order = $acil ? 'u.acil_hizmet DESC, ' : '';
 $order .= "(p.one_cikar = 1 AND (u.paket_bitis IS NULL OR u.paket_bitis >= CURDATE())) DESC, u.puan DESC, u.yorum_sayisi DESC, u.id DESC";
@@ -47,7 +47,7 @@ $ilceler = rows('SELECT * FROM ilceler ORDER BY sira');
 
 $ne = $hizmet ? $hizmet['ad'] : ($kategori ? $kategori['ad'] : 'Usta');
 $nerede = $ilce ? ek_de($ilce['ad']) : "Samsun'da";
-$baslik = $hizmet || $kategori ? "$nerede $ne" : ($ilce ? "$nerede ustalar" : "Samsun'daki ustalar");
+$baslik = $hizmet || $kategori ? "$nerede $ne" : ($metin !== '' ? "$nerede “{$metin}” araması" : ($ilce ? "$nerede ustalar" : "Samsun'daki ustalar"));
 
 site_basla($baslik, "$nerede güvenilir " . tr_lower($ne) . " ustaları: puanlar, yorumlar ve iletişim bilgileri.");
 ?>

@@ -291,6 +291,28 @@ function resim_kucult(string $kaynak, string $hedef, int $tip, int $max): bool
     return $ok;
 }
 
+/** Ustalık belgesini kontrol eder (PDF/JPG/PNG, en fazla 8 MB). Uzantıyı döndürür, hatada RuntimeException fırlatır. */
+function belge_kontrol(?array $f): string
+{
+    if (!$f || ($f['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) throw new RuntimeException('Ustalık belgeni yüklemelisin.');
+    if ($f['error'] === UPLOAD_ERR_INI_SIZE || $f['error'] === UPLOAD_ERR_FORM_SIZE || $f['size'] > 8 * 1024 * 1024) throw new RuntimeException('Belge en fazla 8 MB olabilir.');
+    if ($f['error'] !== UPLOAD_ERR_OK) throw new RuntimeException('Belge yüklenemedi, tekrar dene.');
+    $mime = (new finfo(FILEINFO_MIME_TYPE))->file($f['tmp_name']);
+    $ext = ['application/pdf' => 'pdf', 'image/jpeg' => 'jpg', 'image/png' => 'png'][$mime] ?? null;
+    if (!$ext) throw new RuntimeException('Belge PDF, JPG veya PNG olmalı.');
+    return $ext;
+}
+
+/** Kontrol edilmiş belgeyi uploads/belgeler altına kaydeder, göreli yolu döndürür. */
+function belge_kaydet(array $f, string $ext, int $ustaId): string
+{
+    $dir = ROOT . '/uploads/belgeler';
+    if (!is_dir($dir)) mkdir($dir, 0755, true);
+    $ad = 'belgeler/' . $ustaId . '-' . bin2hex(random_bytes(10)) . '.' . $ext;
+    if (!move_uploaded_file($f['tmp_name'], ROOT . '/uploads/' . $ad)) throw new RuntimeException('Belge kaydedilemedi.');
+    return $ad;
+}
+
 function dosya_sil(?string $goreli): void
 {
     if (!$goreli) return;

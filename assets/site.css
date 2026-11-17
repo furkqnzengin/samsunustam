@@ -350,3 +350,9 @@ img.av{object-fit:cover}
   .auth-card{padding:20px}
 }
 .padres{margin-top:4px;font-size:15px}
+
+/* Elle yazılabilen arama cümlesi */
+.ask .sent input{font:inherit;color:var(--g600);border:0;border-bottom:3px dashed var(--g300);background:transparent;padding:0 4px;outline:none;min-width:4ch;max-width:100%}
+.ask .sent input::placeholder{color:#9fcbb3}
+.ask .sent input:focus{border-bottom-color:var(--g500)}
+.ask .nowrap{display:inline-flex;align-items:baseline;white-space:nowrap}

@@ -19,6 +19,13 @@ if (is_post()) {
     $ilceIds = post_ids('ilceler');
     $hizmet = $hizmetId ? row('SELECT * FROM hizmetler WHERE id = ?', [$hizmetId]) : null;
 
+    $belgeExt = $belgeHata = '';
+    try {
+        $belgeExt = belge_kontrol($_FILES['belge'] ?? null);
+    } catch (RuntimeException $ex) {
+        $belgeHata = $ex->getMessage();
+    }
+
     if (post('web') !== '') redirect('');
     if (mb_strlen($ad) < 3) $hata = 'Adınızı ve soyadınızı yazın.';
     elseif (!tel_gecerli($tel)) $hata = 'Geçerli bir telefon numarası yazın (05xx xxx xx xx).';
@@ -26,6 +33,7 @@ if (is_post()) {
     elseif (mb_strlen($sifre) < 8) $hata = 'Şifre en az 8 karakter olmalı.';
     elseif (!$hizmet) $hata = 'Mesleğinizi seçin.';
     elseif (!$ilceIds) $hata = 'Hizmet verdiğiniz en az bir ilçe seçin.';
+    elseif ($belgeHata !== '') $hata = $belgeHata;
     elseif (!post('kvkk')) $hata = 'Kullanım koşullarını ve gizlilik metnini onaylamanız gerekiyor.';
     elseif (val('SELECT id FROM kullanicilar WHERE eposta = ?', [$eposta])) $hata = 'Bu e-posta ile zaten bir hesap var. Giriş yapmayı deneyin.';
     elseif (!hiz_siniri('kayit', 3, 3600)) $hata = 'Çok fazla deneme yapıldı, lütfen daha sonra tekrar deneyin.';
@@ -40,6 +48,7 @@ if (is_post()) {
         q('INSERT INTO usta_hizmet (usta_id, hizmet_id) VALUES (?, ?)', [$usId, $hizmet['id']]);
         $valid = array_map('intval', array_column($ilceler, 'id'));
         foreach (array_intersect($ilceIds, $valid) as $iid) q('INSERT INTO usta_ilce (usta_id, ilce_id) VALUES (?, ?)', [$usId, $iid]);
+        q('UPDATE ustalar SET belge_dosya = ? WHERE id = ?', [belge_kaydet($_FILES['belge'], $belgeExt, $usId), $usId]);
         db()->commit();
         giris_yap(['id' => $kid]);
         flash('Hoş geldin! Başvurun alındı. Profilini tamamla; onaylandığında sitede yayına çıkacak.');
@@ -59,7 +68,7 @@ site_basla('Usta olarak kaydol', "Samsun'da usta mısın? Ücretsiz profilini ol
   <div class="auth-card">
     <h2>Ücretsiz kaydol</h2>
     <?php if ($hata): ?><div class="flash flash-err"><?= e($hata) ?></div><?php endif; ?>
-    <form method="post" class="fform">
+    <form method="post" class="fform" enctype="multipart/form-data">
       <?= csrf_field() ?><input class="hp" name="web" tabindex="-1" autocomplete="off">
       <label>Ad Soyad<input name="ad_soyad" required maxlength="100" value="<?= e(post('ad_soyad')) ?>" autocomplete="name"></label>
       <div class="two">
@@ -74,6 +83,8 @@ site_basla('Usta olarak kaydol', "Samsun'da usta mısın? Ücretsiz profilini ol
       <fieldset><legend>Hizmet verdiğin ilçeler</legend><div class="checks">
         <?php foreach ($ilceler as $i): ?><label class="cb"><input type="checkbox" name="ilceler[]" value="<?= $i['id'] ?>" <?= in_array((int)$i['id'], $secIlce, true) ? 'checked' : '' ?>><span><?= e($i['ad']) ?></span></label><?php endforeach; ?>
       </div></fieldset>
+      <label>Ustalık belgesi * <small class="muted" style="font-weight:400">Ustalık / kalfalık belgesi, MYK belgesi veya oda kaydı (PDF, JPG ya da PNG, en fazla 8 MB). Sitede yayınlanmaz, sadece yönetici görür.</small>
+        <input type="file" name="belge" accept="application/pdf,image/jpeg,image/png" required></label>
       <label class="chk"><input type="checkbox" name="kvkk" value="1" required> <span>Bilgilerimin sitede yayınlanmasını ve <a href="<?= url('gizlilik.php') ?>" target="_blank">gizlilik metnini</a> onaylıyorum.</span></label>
       <button class="btn btn-dark btn-lg">Kaydol ve profilimi oluştur →</button>
       <p class="muted center">Zaten hesabın var mı? <a class="link" href="<?= url('giris.php') ?>">Giriş yap</a></p>

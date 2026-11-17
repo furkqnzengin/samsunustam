@@ -27,9 +27,7 @@ if (!$dbHata && is_post() && !kurulu_mu()) {
     elseif (mb_strlen($sifre) < 8) $hata = 'Şifre en az 8 karakter olmalı.';
     else {
         // Tabloları oluştur
-        $sql = file_get_contents(ROOT . '/sql/schema.sql');
-        $sql = preg_replace('/^--.*$/m', '', $sql);
-        foreach (array_filter(array_map('trim', explode(';', $sql))) as $stmt) db()->exec($stmt);
+        sema_uygula();
 
         $seed = require ROOT . '/sql/seed.php';
         db()->beginTransaction();
