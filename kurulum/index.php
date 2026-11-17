@@ -33,15 +33,7 @@ if (!$dbHata && is_post() && !kurulu_mu()) {
 
         $seed = require ROOT . '/sql/seed.php';
         db()->beginTransaction();
-        if ((int)val('SELECT COUNT(*) FROM kategoriler') === 0) {
-            foreach ($seed['kategoriler'] as $ki => [$kad, $ikon, $acik, $hizmetler]) {
-                q('INSERT INTO kategoriler (ad, slug, ikon, aciklama, sira) VALUES (?,?,?,?,?)', [$kad, slugify($kad), $ikon, $acik, $ki]);
-                $kid = (int)db()->lastInsertId();
-                foreach ($hizmetler as $hi => $h) {
-                    q('INSERT INTO hizmetler (kategori_id, ad, slug, sira) VALUES (?,?,?,?)', [$kid, $h, slugify($h), $hi]);
-                }
-            }
-        }
+        seed_kategoriler();
         if ((int)val('SELECT COUNT(*) FROM ilceler') === 0) {
             foreach ($seed['ilceler'] as $i => $il) q('INSERT INTO ilceler (ad, slug, sira) VALUES (?,?,?)', [$il, slugify($il), $i]);
         }
@@ -52,6 +44,7 @@ if (!$dbHata && is_post() && !kurulu_mu()) {
         }
         ayar_kaydet('populer_hizmetler', implode(',', $seed['populer_hizmetler']));
         ayar_kaydet('site_eposta', $eposta);
+        ayar_kaydet('db_surum', (string)DB_SURUM);
         q("INSERT INTO kullanicilar (ad, eposta, sifre, rol) VALUES (?,?,?,'admin')", [$ad, $eposta, password_hash($sifre, PASSWORD_DEFAULT)]);
         $k = row('SELECT * FROM kullanicilar WHERE eposta = ?', [$eposta]);
         db()->commit();

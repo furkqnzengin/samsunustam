@@ -85,6 +85,12 @@ function tr_lower(string $s): string
     return mb_strtolower(strtr($s, ['I' => 'ı', 'İ' => 'i']), 'UTF-8');
 }
 
+/** Cümle içinde kullanmak için küçük harfe çevirir; CNC, LPG gibi kısaltmalar olduğu gibi kalır. */
+function cumle_ici(string $s): string
+{
+    return implode(' ', array_map(fn($w) => (mb_strlen($w) >= 2 && $w === tr_upper($w)) ? $w : tr_lower($w), explode(' ', $s)));
+}
+
 function tr_upper(string $s): string
 {
     return mb_strtoupper(strtr($s, ['i' => 'İ', 'ı' => 'I']), 'UTF-8');

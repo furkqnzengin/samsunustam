@@ -56,6 +56,7 @@ CREATE TABLE IF NOT EXISTS ustalar (
   meslek VARCHAR(100) NOT NULL,
   telefon VARCHAR(20) NOT NULL,
   whatsapp VARCHAR(20) NULL,
+  adres VARCHAR(255) NULL,
   hakkinda TEXT NULL,
   tecrube_yil SMALLINT UNSIGNED NULL,
   kesif_ucretsiz TINYINT(1) NOT NULL DEFAULT 0,

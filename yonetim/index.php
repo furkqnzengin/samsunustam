@@ -16,7 +16,6 @@ $aranan = rows("SELECT h.ad, SUM(a.adet) n FROM aramalar a JOIN hizmetler h ON h
 $aranMax = max(1, ...array_map(fn($r) => (int)$r['n'], $aranan ?: [['n' => 1]]));
 $sonUstalar = rows('SELECT u.*, p.ad AS paket_ad, p.one_cikar FROM ustalar u LEFT JOIN paketler p ON p.id = u.paket_id ORDER BY u.id DESC LIMIT 5');
 $yorumlar = rows("SELECT y.*, u.ad_soyad FROM yorumlar y JOIN ustalar u ON u.id = y.usta_id WHERE y.durum = 'beklemede' ORDER BY y.id LIMIT 4");
-$paketTalep = rows("SELECT pt.*, u.ad_soyad, u.telefon, p.ad AS paket FROM paket_talepleri pt JOIN ustalar u ON u.id = pt.usta_id JOIN paketler p ON p.id = pt.paket_id WHERE pt.durum = 'yeni' ORDER BY pt.id DESC LIMIT 5");
 
 panel_basla('admin', 'index.php', 'Genel Bakış', tarih_tr() . ' · Sitenin bugünkü durumu');
 ?>
@@ -74,11 +73,5 @@ panel_basla('admin', 'index.php', 'Genel Bakış', tarih_tr() . ' · Sitenin bug
   </div>
 </div>
 
-<?php if ($paketTalep): ?>
-<div class="card"><h2>Paket Bilgi Talepleri <a href="paketler.php">Tümü →</a></h2>
-  <div class="list"><?php foreach ($paketTalep as $p): ?>
-    <div class="li"><div class="grow"><b><?= e($p['ad_soyad']) ?></b> → <?= e($p['paket']) ?> paketi<br><small><?= zaman_once($p['olusturma']) ?> · <?= e(tel_goster($p['telefon'])) ?></small></div><a class="btn btn-main" href="tel:<?= e($p['telefon']) ?>">📞 Ara</a></div>
-  <?php endforeach; ?></div>
-</div>
-<?php endif; ?>
+
 <?php panel_bitir();

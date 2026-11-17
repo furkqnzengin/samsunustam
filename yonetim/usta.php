@@ -36,7 +36,6 @@ if (is_post()) {
             $bitis = post('paket_bitis');
             $bitis = preg_match('/^\d{4}-\d{2}-\d{2}$/', $bitis) ? $bitis : null;
             q('UPDATE ustalar SET paket_id = ?, paket_bitis = ? WHERE id = ?', [$pid, $bitis, $id]);
-            if ($pid) q("UPDATE paket_talepleri SET durum = 'gorusuldu' WHERE usta_id = ? AND paket_id = ?", [$id, $pid]);
             flash('Paket güncellendi.');
             break;
         case 'sil':
@@ -93,6 +92,7 @@ panel_basla('admin', 'ustalar.php', $u['ad_soyad'], e($u['meslek']) . ' · ' . d
     <dl class="dl">
       <dt>Telefon</dt><dd><a class="link" href="tel:<?= e($u['telefon']) ?>"><?= e(tel_goster($u['telefon'])) ?></a></dd>
       <dt>WhatsApp</dt><dd><?= $u['whatsapp'] ? '<a class="link" target="_blank" rel="noopener" href="' . e(wa_link($u['whatsapp'])) . '">' . e(tel_goster($u['whatsapp'])) . '</a>' : '—' ?></dd>
+      <dt>Adres</dt><dd><?= $u['adres'] ? e($u['adres']) : '—' ?></dd>
       <dt>E-posta</dt><dd><?= e($u['eposta']) ?></dd>
       <dt>Tecrübe</dt><dd><?= $u['tecrube_yil'] ? (int)$u['tecrube_yil'] . ' yıl' : '—' ?></dd>
       <dt>Hizmetler</dt><dd><?= e(implode(', ', array_column($hizmetler, 'ad')) ?: '—') ?></dd>

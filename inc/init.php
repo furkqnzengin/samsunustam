@@ -37,3 +37,6 @@ header('Referrer-Policy: strict-origin-when-cross-origin');
 require __DIR__ . '/db.php';
 require __DIR__ . '/helpers.php';
 require __DIR__ . '/auth.php';
+require __DIR__ . '/guncelle.php';
+
+db_guncelle();

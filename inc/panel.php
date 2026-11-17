@@ -18,7 +18,6 @@ function panel_basla(string $rol, string $aktif, string $baslik, string $alt = '
                 ['yorumlar.php', '⭐', 'Yorumlarım', 0],
             ]],
             ['Hesap', [
-                ['paket.php', '💎', 'Üyelik Paketim', 0],
                 ['ayarlar.php', '⚙️', 'Hesap Ayarları', 0],
             ]],
         ];
@@ -29,7 +28,6 @@ function panel_basla(string $rol, string $aktif, string $baslik, string $alt = '
     } else {
         $bek = (int)val("SELECT COUNT(*) FROM ustalar WHERE durum = 'beklemede'");
         $yor = (int)val("SELECT COUNT(*) FROM yorumlar WHERE durum = 'beklemede'");
-        $pak = (int)val("SELECT COUNT(*) FROM paket_talepleri WHERE durum = 'yeni'");
         $menu = [
             ['Yönetim', [
                 ['index.php', '📊', 'Genel Bakış', 0],
@@ -40,7 +38,7 @@ function panel_basla(string $rol, string $aktif, string $baslik, string $alt = '
             ]],
             ['İçerik', [
                 ['kategoriler.php', '🗂️', 'Kategoriler & Hizmetler', 0],
-                ['paketler.php', '💎', 'Üyelik Paketleri', $pak],
+                ['paketler.php', '💎', 'Premium & Paketler', 0],
                 ['ayarlar.php', '⚙️', 'Site Ayarları', 0],
             ]],
         ];

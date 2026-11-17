@@ -16,14 +16,14 @@ Samsun'daki ustaları listeleyen yerel usta rehberi. Düz PHP + MySQL ile yazıl
 - İş fotoğrafları (en fazla 12)
 - Gelen iş talepleri, yorumlara yanıt
 - Görüntülenme / arama / WhatsApp istatistikleri
-- Üyelik paketleri ("Bilgi almak istiyorum" talebi)
+- Dükkan / atölye adresi (profilde "Haritada aç" linkiyle)
 
 **Yönetim paneli** (`/yonetim`)
 - Usta başvurularını onaylama / reddetme, askıya alma, silme
 - Belgeli rozeti verme, paket atama (bitiş tarihli)
 - Yorum onaylama / gizleme
 - Kategori ve hizmet ekleme / düzenleme
-- Üyelik paketleri (fiyat alanı boş bırakılırsa fiyat gösterilmez)
+- Premium & paketler: paketler ustalara gösterilmez; yönetici ustayı Premium yapar (aramada üstte + rozet)
 - Site iletişim bilgileri
 
 ## Gereksinimler
@@ -46,6 +46,10 @@ Samsun'daki ustaları listeleyen yerel usta rehberi. Düz PHP + MySQL ile yazıl
 7. **Ayarlar:** Yönetim paneli → *Site Ayarları* bölümünden telefon, WhatsApp ve e-posta bilgilerini gir.
 
 `uploads` klasörünün yazılabilir olması gerekir (genelde varsayılan olarak öyledir, değilse izni 755 yapın).
+
+## Güncelleme yükleme
+
+Yeni sürümü yüklerken `kurulum` klasörünü ve `config.php` dosyasını **yüklemeyin**. Diğer dosyaların üzerine yazın. Veritabanı değişiklikleri sitenin ilk açılışında otomatik uygulanır (`inc/guncelle.php`), veriler korunur.
 
 ## Klasör yapısı
 

@@ -63,13 +63,13 @@ site_basla();
   <div>
     <span class="eyebrow"><i></i> <?= $toplamUsta ? sayi($toplamUsta) . ' usta · ' : '' ?>17 ilçe · <?= count($hizmetler) ?> hizmet</span>
     <h1>Evde bir şey mi bozuldu? <span class="hl">Samsun'da ustası var.</span></h1>
-    <p class="lead">Atakum'dan Bafra'ya, mahallendeki güvenilir ustayı bul. Yorumları oku, tek dokunuşla ara.</p>
+    <p class="lead">Evdeki arızadan sanayideki tornacıya, tır servisinden kombiciye; Samsun'un güvenilir ustalarını bul. Yorumları oku, tek dokunuşla ara.</p>
     <form class="ask" method="get" action="<?= url('ara.php') ?>">
       <div class="sent">Bana bir
         <select name="h" aria-label="Hizmet">
-          <?php foreach ($populerH as $h): ?><option value="<?= e($h['slug']) ?>"><?= e(tr_lower($h['ad'])) ?></option><?php endforeach; ?>
+          <?php foreach ($populerH as $h): ?><option value="<?= e($h['slug']) ?>"><?= e(cumle_ici($h['ad'])) ?></option><?php endforeach; ?>
           <?php foreach ($kategoriler as $k): ?><optgroup label="<?= e($k['ad']) ?>">
-            <?php foreach ($hizmetByKat[$k['id']] ?? [] as $h): ?><option value="<?= e($h['slug']) ?>"><?= e(tr_lower($h['ad'])) ?></option><?php endforeach; ?>
+            <?php foreach ($hizmetByKat[$k['id']] ?? [] as $h): ?><option value="<?= e($h['slug']) ?>"><?= e(cumle_ici($h['ad'])) ?></option><?php endforeach; ?>
           </optgroup><?php endforeach; ?>
         </select>
         lazım,
@@ -79,7 +79,7 @@ site_basla();
       </div>
       <div class="row">
         <div class="quick">
-          <?php foreach (['kombi-bakimi', 'su-kacagi-tespiti', 'boya-badana'] as $s): if (isset($hizmetBySlug[$s])): ?>
+          <?php foreach (['kombi-bakimi', 'tornaci', 'tir-bakim-servisi', 'arac-periyodik-bakim'] as $s): if (isset($hizmetBySlug[$s])): ?>
             <a href="<?= url('ara.php?h=' . $s) ?>"><?= e($hizmetBySlug[$s]['ad']) ?></a>
           <?php endif; endforeach; ?>
         </div>

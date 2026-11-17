@@ -46,6 +46,7 @@ if (is_post()) {
     $meslek = mb_substr(post('meslek'), 0, 100);
     $tel = post('telefon');
     $wa = post('whatsapp');
+    $adres = mb_substr(post('adres'), 0, 255);
     $tecrube = post('tecrube_yil') === '' ? null : max(0, min(70, (int)post('tecrube_yil')));
     $hakkinda = mb_substr(post('hakkinda'), 0, 2000);
     $hIds = array_intersect(post_ids('hizmetler'), array_map('intval', array_column($hizmetler, 'id')));
@@ -73,8 +74,8 @@ if (is_post()) {
             $slug = $ad !== $u['ad_soyad'] ? benzersiz_slug($ad, $uid) : $u['slug'];
             // Reddedilmiş başvuru düzenlenince tekrar onaya düşer
             $durum = $u['durum'] === 'reddedildi' ? 'beklemede' : $u['durum'];
-            q('UPDATE ustalar SET ad_soyad=?, slug=?, meslek=?, telefon=?, whatsapp=?, tecrube_yil=?, hakkinda=?, kesif_ucretsiz=?, acil_hizmet=?, foto=?, durum=? WHERE id=?', [
-                $ad, $slug, $meslek, tel_temizle($tel), $wa !== '' ? tel_temizle($wa) : null, $tecrube, $hakkinda ?: null,
+            q('UPDATE ustalar SET ad_soyad=?, slug=?, meslek=?, telefon=?, whatsapp=?, adres=?, tecrube_yil=?, hakkinda=?, kesif_ucretsiz=?, acil_hizmet=?, foto=?, durum=? WHERE id=?', [
+                $ad, $slug, $meslek, tel_temizle($tel), $wa !== '' ? tel_temizle($wa) : null, $adres ?: null, $tecrube, $hakkinda ?: null,
                 post('kesif_ucretsiz') ? 1 : 0, post('acil_hizmet') ? 1 : 0, $foto, $durum, $uid,
             ]);
             q('DELETE FROM usta_hizmet WHERE usta_id = ?', [$uid]);
@@ -108,6 +109,7 @@ panel_basla('usta', 'profil.php', 'Profilim', 'Müşterilerin gördüğü bilgil
     <label>Meslek / Unvan<input class="inp" name="meslek" required maxlength="100" value="<?= $v('meslek') ?>" placeholder="Örn: Elektrikçi"></label>
     <label>Telefon<input class="inp" name="telefon" type="tel" required value="<?= $v('telefon') ?>"></label>
     <label>WhatsApp <small class="muted">(boş bırakılabilir)</small><input class="inp" name="whatsapp" type="tel" value="<?= $v('whatsapp') ?>"></label>
+    <label class="full">Dükkan / atölye adresi <small class="muted">(isteğe bağlı; müşteri sana geliyorsa yaz)</small><input class="inp" name="adres" maxlength="255" value="<?= $v('adres') ?>" placeholder="Örn: Tekkeköy Sanayi Sitesi, 5. Blok No: 12"></label>
     <label>Tecrübe (yıl)<input class="inp" name="tecrube_yil" type="number" min="0" max="70" value="<?= $v('tecrube_yil') ?>"></label>
     <div class="toggles">
       <label class="chk"><input type="checkbox" name="kesif_ucretsiz" value="1" <?= $chk('kesif_ucretsiz') ?>> Keşif ücretsiz</label>

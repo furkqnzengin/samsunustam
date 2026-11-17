@@ -56,9 +56,9 @@ function site_bitir(): void
     </div>
     <div><h4>Samsun'da sık arananlar</h4><div class="cloud">
       <?php if ($bulut): foreach ($bulut as $b): ?>
-        <a href="<?= url('ara.php?h=' . $b['hslug'] . '&i=' . $b['islug']) ?>"><?= e($b['ilce'] . ' ' . tr_lower($b['hizmet'])) ?></a>
+        <a href="<?= url('ara.php?h=' . $b['hslug'] . '&i=' . $b['islug']) ?>"><?= e($b['ilce'] . ' ' . cumle_ici($b['hizmet'])) ?></a>
       <?php endforeach; else: foreach (['elektrikci' => 'Elektrikçi', 'su-tesisatcisi' => 'Su Tesisatçısı', 'kombi-tamiri' => 'Kombi Tamiri', 'boya-badana' => 'Boya Badana', 'evden-eve-nakliyat' => 'Evden Eve Nakliyat', 'cilingir' => 'Çilingir', 'cam-balkon' => 'Cam Balkon', 'hali-yikama' => 'Halı Yıkama'] as $s => $a): ?>
-        <a href="<?= url('ara.php?h=' . $s) ?>">Samsun <?= e(tr_lower($a)) ?></a>
+        <a href="<?= url('ara.php?h=' . $s) ?>">Samsun <?= e(cumle_ici($a)) ?></a>
       <?php endforeach; endif; ?>
     </div></div>
   </div>

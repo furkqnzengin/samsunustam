@@ -82,6 +82,7 @@ site_basla($u['ad_soyad'] . ' – ' . $u['meslek'], $u['ad_soyad'] . ', ' . ($il
       <h1><?= e($u['ad_soyad']) ?></h1>
       <p class="pjob"><?= e($u['meslek']) ?><?= $u['tecrube_yil'] ? ' · ' . (int)$u['tecrube_yil'] . ' yıl tecrübe' : '' ?></p>
       <p class="muted">📍 <?= e($ilceAdlari ? implode(', ', $ilceAdlari) : 'Samsun') ?></p>
+      <?php if (!empty($u['adres'])): ?><p class="padres">🏭 <?= e($u['adres']) ?> · <a class="link" href="https://www.google.com/maps/search/?api=1&amp;query=<?= rawurlencode($u['adres'] . ', Samsun') ?>" target="_blank" rel="noopener">Haritada aç ↗</a></p><?php endif; ?>
     </div>
     <div class="pscore">
       <?php if ($u['yorum_sayisi']): ?><b><?= puan_fmt($u['puan']) ?></b><span class="stars"><?= yildiz($u['puan']) ?></span><small><?= (int)$u['yorum_sayisi'] ?> yorum</small>
@@ -136,7 +137,7 @@ site_basla($u['ad_soyad'] . ' – ' . $u['meslek'], $u['ad_soyad'] . ', ' . ($il
           <label>Adınız<input name="ad" maxlength="80" required value="<?= e(post('form') === 'talep' ? post('ad') : '') ?>"></label>
           <label>Telefon<input name="telefon" type="tel" inputmode="tel" placeholder="05xx xxx xx xx" required value="<?= e(post('form') === 'talep' ? post('telefon') : '') ?>"></label>
           <label>İlçe<select name="ilce"><option value="">Seçin</option><?php foreach ($tumIlceler as $i): ?><option value="<?= $i['id'] ?>" <?= (int)post('ilce') === (int)$i['id'] ? 'selected' : '' ?>><?= e($i['ad']) ?></option><?php endforeach; ?></select></label>
-          <label>Ne yaptırmak istiyorsun?<textarea name="mesaj" rows="4" maxlength="1500" required placeholder="Örn: Salondaki priz çalışmıyor, sigorta atıyor."><?= e(post('form') === 'talep' ? post('mesaj') : '') ?></textarea></label>
+          <label>Ne yaptırmak istiyorsun?<textarea name="mesaj" rows="4" maxlength="1500" required placeholder="Örn: Arızayı ya da yaptırmak istediğin işi kısaca anlat."><?= e(post('form') === 'talep' ? post('mesaj') : '') ?></textarea></label>
           <label class="chk"><input type="checkbox" name="kvkk" value="1" required> <span>Adımın ve telefonumun bu ustayla paylaşılmasını onaylıyorum. <a href="<?= url('gizlilik.php') ?>" target="_blank">Gizlilik</a></span></label>
           <button class="btn btn-dark">Talebi gönder</button>
         </form>
