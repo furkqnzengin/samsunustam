@@ -54,7 +54,7 @@ if (!$dbHata && is_post() && !kurulu_mu()) {
 ?><!doctype html>
 <html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kurulum – Samsun Ustam</title>
-<link rel="stylesheet" href="<?= url('assets/site.css') ?>">
+<link rel="stylesheet" href="<?= asset('assets/site.css') ?>">
 </head><body>
 <div class="auth-wrap"><div class="auth-card">
   <a class="logo" href="<?= url() ?>"><span>Samsun<b>Ustam</b></span></a>

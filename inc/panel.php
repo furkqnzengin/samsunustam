@@ -63,7 +63,7 @@ function panel_basla(string $rol, string $aktif, string $baslik, string $alt = '
 <meta name="robots" content="noindex">
 <title><?= e($baslik) ?> – <?= $rol === 'usta' ? 'Usta Paneli' : 'Yönetim' ?> – Samsun Ustam</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="<?= url('assets/panel.css') ?>?v=3">
+<link rel="stylesheet" href="<?= asset('assets/panel.css') ?>">
 </head>
 <body>
 <div class="mobilebar"><a class="logo" href="index.php"><div class="mark"><?= LOGO_SVG ?></div><span>Samsun<b>Ustam</b><?= $rol === 'admin' ? ' · Yönetim' : '' ?></span></a><a href="<?= e($cikis) ?>" class="mlogout" title="Çıkış">🚪</a></div>
@@ -96,7 +96,7 @@ function panel_bitir(): void
 </div>
 <nav class="tabbar"><?php foreach ($tab as [$href, $ic, $ad]): ?><a class="<?= $aktif === $href ? 'on' : '' ?>" href="<?= e($href) ?>"><span><?= $ic ?></span><?= e($ad) ?></a><?php endforeach; ?>
   <a href="#" onclick="document.body.classList.toggle('msheet-acik');return false"><span>☰</span>Menü</a></nav>
-<div class="msheet" onclick="if(event.target===this)document.body.classList.remove('msheet-acik')"><div class="msheet-in">
+<div class="msheet" style="display:none" onclick="if(event.target===this)document.body.classList.remove('msheet-acik')"><div class="msheet-in">
   <?php foreach ($menu as [$grup, $items]): ?><div class="tag"><?= e($grup) ?></div><?php foreach ($items as [$href, $ic, $ad, $cnt]): ?><a class="<?= $aktif === $href ? 'on' : '' ?>" href="<?= e($href) ?>"><?= $ic ?> <?= e($ad) ?><?= $cnt ? '<span class="cnt">' . $cnt . '</span>' : '' ?></a><?php endforeach; ?><?php endforeach; ?>
   <div class="tag">Diğer</div><a href="<?= e($alt_link[0]) ?>" target="_blank"><?= e($alt_link[1]) ?></a><a href="<?= e($cikis) ?>">🚪 Çıkış Yap</a>
 </div></div>

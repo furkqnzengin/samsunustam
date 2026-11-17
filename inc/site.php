@@ -17,7 +17,7 @@ function site_basla(string $baslik = '', string $aciklama = ''): void
 <meta name="description" content="<?= e($aciklama) ?>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="<?= url('assets/site.css') ?>?v=3">
+<link rel="stylesheet" href="<?= asset('assets/site.css') ?>">
 </head>
 <body>
 <header><div class="wrap">

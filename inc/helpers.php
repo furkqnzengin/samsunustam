@@ -321,6 +321,13 @@ function dosya_sil(?string $goreli): void
     if ($yol && $kok && str_starts_with($yol, $kok . DIRECTORY_SEPARATOR) && is_file($yol)) unlink($yol);
 }
 
+/** CSS/JS bağlantısı: dosya her değiştiğinde tarayıcı yeni sürümü indirir. */
+function asset(string $yol): string
+{
+    $dosya = ROOT . '/' . ltrim($yol, '/');
+    return url($yol) . '?v=' . (is_file($dosya) ? filemtime($dosya) : '1');
+}
+
 function upload_url(?string $goreli): string
 {
     return $goreli ? url('uploads/' . $goreli) : '';
