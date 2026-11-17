@@ -7,6 +7,39 @@ $uid = (int)$u['id'];
 const MAKS_SERVIS_FOTO = 20;
 
 $id = (int)get('id');
+
+/** Formla birlikte gönderilen tahsilatı ekler. */
+function tahsilat_ekle(int $sid): void
+{
+    $tutar = para_oku(post('o_tutar'));
+    if ($tutar <= 0) { flash('Tahsilat için tutar yazmalısın.', 'err'); return; }
+    $tarih = preg_match('/^\d{4}-\d{2}-\d{2}$/', post('o_tarih')) ? post('o_tarih') : date('Y-m-d');
+    q('INSERT INTO servis_odemeleri (servis_id, tutar, yontem, tarih, aciklama) VALUES (?,?,?,?,?)',
+        [$sid, $tutar, isset(ODEME_YONTEMLERI[post('o_yontem')]) ? post('o_yontem') : 'nakit', $tarih, mb_substr(post('o_aciklama'), 0, 200) ?: null]);
+    flash(para($tutar) . ' tahsilat eklendi.');
+}
+
+/** Formla birlikte gönderilen fotoğrafları yükler. */
+function servis_foto_yukle(int $sid, int $ustaId): void
+{
+    $files = $_FILES['fotolar'] ?? null;
+    if (!$files || !is_array($files['name'])) return;
+    $mevcut = (int)val('SELECT COUNT(*) FROM servis_fotolari WHERE servis_id = ?', [$sid]);
+    $etiket = in_array(post('f_etiket'), ['once', 'sonra', 'diger'], true) ? post('f_etiket') : 'diger';
+    $n = 0;
+    foreach ($files['name'] as $i => $name) {
+        if ($files['error'][$i] === UPLOAD_ERR_NO_FILE) continue;
+        if ($mevcut + $n >= MAKS_SERVIS_FOTO) { flash('Bir kayda en fazla ' . MAKS_SERVIS_FOTO . ' fotoğraf eklenebilir.', 'err'); break; }
+        try {
+            $yol = resim_yukle(['name' => $name, 'tmp_name' => $files['tmp_name'][$i], 'error' => $files['error'][$i], 'size' => $files['size'][$i]], 'servis/' . $ustaId);
+            q('INSERT INTO servis_fotolari (servis_id, dosya, etiket) VALUES (?,?,?)', [$sid, $yol, $etiket]);
+            $n++;
+        } catch (RuntimeException $ex) {
+            flash($name . ': ' . $ex->getMessage(), 'err');
+        }
+    }
+    if ($n) flash("$n fotoğraf eklendi.");
+}
 $s = $id ? row('SELECT * FROM servisler WHERE id = ? AND usta_id = ?', [$id, $uid]) : null;
 if ($id && !$s) { flash('Kayıt bulunamadı.', 'err'); redirect('usta/servis.php'); }
 
@@ -20,41 +53,9 @@ if (is_post()) {
     $islem = post('islem');
     $geri = fn() => redirect('usta/servis-kayit.php?id=' . $id);
 
-    if ($s && $islem === 'odeme_ekle') {
-        $tutar = para_oku(post('tutar'));
-        $tarih = preg_match('/^\d{4}-\d{2}-\d{2}$/', post('tarih')) ? post('tarih') : date('Y-m-d');
-        if ($tutar <= 0) flash('Ödeme tutarını yaz.', 'err');
-        else {
-            q('INSERT INTO servis_odemeleri (servis_id, tutar, yontem, tarih, aciklama) VALUES (?,?,?,?,?)',
-                [$id, $tutar, isset(ODEME_YONTEMLERI[post('yontem')]) ? post('yontem') : 'nakit', $tarih, mb_substr(post('aciklama'), 0, 200) ?: null]);
-            flash(para($tutar) . ' tahsilat eklendi.');
-        }
-        $geri();
-    }
     if ($s && $islem === 'odeme_sil') {
         q('DELETE o FROM servis_odemeleri o JOIN servisler s ON s.id = o.servis_id WHERE o.id = ? AND s.usta_id = ?', [(int)post('oid'), $uid]);
         flash('Ödeme silindi.', 'info');
-        $geri();
-    }
-    if ($s && $islem === 'foto_ekle') {
-        $mevcut = (int)val('SELECT COUNT(*) FROM servis_fotolari WHERE servis_id = ?', [$id]);
-        $files = $_FILES['fotolar'] ?? null;
-        $etiket = in_array(post('etiket'), ['once', 'sonra', 'diger'], true) ? post('etiket') : 'diger';
-        $n = 0;
-        if ($files && is_array($files['name'])) {
-            foreach ($files['name'] as $i => $name) {
-                if ($files['error'][$i] === UPLOAD_ERR_NO_FILE) continue;
-                if ($mevcut + $n >= MAKS_SERVIS_FOTO) { flash('Bir kayda en fazla ' . MAKS_SERVIS_FOTO . ' fotoğraf eklenebilir.', 'err'); break; }
-                try {
-                    $yol = resim_yukle(['name' => $name, 'tmp_name' => $files['tmp_name'][$i], 'error' => $files['error'][$i], 'size' => $files['size'][$i]], 'servis/' . $uid);
-                    q('INSERT INTO servis_fotolari (servis_id, dosya, etiket) VALUES (?,?,?)', [$id, $yol, $etiket]);
-                    $n++;
-                } catch (RuntimeException $ex) {
-                    flash($name . ': ' . $ex->getMessage(), 'err');
-                }
-            }
-        }
-        if ($n) flash("$n fotoğraf eklendi.");
         $geri();
     }
     if ($s && $islem === 'foto_sil') {
@@ -141,8 +142,12 @@ if (is_post()) {
                 q('INSERT INTO servis_kalemleri (servis_id, tur, aciklama, adet, birim_fiyat, sira) VALUES (?,?,?,?,?,?)', [$id, $tur, $acik, $adet, $fiyat, $i]);
             }
             db()->commit();
-            flash($s ? 'Kayıt güncellendi.' : 'Kayıt #' . ($vals['no'] ?? '') . ' oluşturuldu. Fotoğraf ve ödeme ekleyebilirsin.');
-            redirect('usta/servis-kayit.php?id=' . $id);
+            flash($s ? 'Kayıt kaydedildi.' : 'Kayıt #' . ($vals['no'] ?? '') . ' oluşturuldu. Fotoğraf ve ödeme ekleyebilirsin.');
+            $capa = '';
+            if ($s && post('odeme_ekle')) { tahsilat_ekle($id); $capa = '#tahsilat'; }
+            if ($s && post('foto_ekle')) { servis_foto_yukle($id, $uid); $capa = '#foto'; }
+            elseif ($s) servis_foto_yukle($id, $uid); // "Kaydet"e basılınca seçili fotoğraf da kaybolmasın
+            redirect('usta/servis-kayit.php?id=' . $id . $capa);
         }
     }
 }
@@ -175,8 +180,8 @@ panel_basla('usta', 'servis.php', $s ? 'Kayıt #' . $s['no'] . ' · ' . $s['basl
   <a class="btn btn-main" href="servis-rapor.php?id=<?= $id ?>" target="_blank">📄 Rapor oluştur</a>
   <?php if ($wa): ?><a class="btn btn-soft" href="<?= e($wa) ?>" target="_blank" rel="noopener">💬 Raporu WhatsApp'tan gönder</a><?php endif; ?>
   <button type="button" class="btn btn-ghost" onclick="navigator.clipboard.writeText('<?= e(rapor_url($s)) ?>').then(()=>this.textContent='✓ Link kopyalandı')">🔗 Rapor linkini kopyala</button>
-  <form method="post" class="inline-form" style="margin-left:auto"><?= csrf_field() ?><input type="hidden" name="islem" value="durum">
-    <select class="inp" name="durum" onchange="this.form.submit()"><?php foreach (servis_durumlari() as $k => [$ad]): ?><option value="<?= $k ?>" <?= $s['durum'] === $k ? 'selected' : '' ?>><?= e($ad) ?></option><?php endforeach; ?></select></form>
+  <div class="inline-form" style="margin-left:auto">
+    <select class="inp" id="hizli_durum" aria-label="Durum"><?php foreach (servis_durumlari() as $k => [$ad]): ?><option value="<?= $k ?>" <?= $s['durum'] === $k ? 'selected' : '' ?>><?= e($ad) ?></option><?php endforeach; ?></select></div>
 </div>
 <div class="stats three">
   <div class="stat"><div class="ic">🧾</div><div><small>Toplam</small><b><?= para($h['toplam']) ?></b></div></div>
@@ -185,7 +190,7 @@ panel_basla('usta', 'servis.php', $s ? 'Kayıt #' . $s['no'] . ' · ' . $s['basl
 </div>
 <?php endif; ?>
 
-<form method="post" class="card servis-form" id="sform">
+<form method="post" class="card servis-form" id="sform" enctype="multipart/form-data">
   <?= csrf_field() ?><input type="hidden" name="islem" value="kaydet">
   <?php if (!$s): ?>
     <div class="sektor-sec"><small class="muted">Kayıt türü:</small>
@@ -267,26 +272,28 @@ panel_basla('usta', 'servis.php', $s ? 'Kayıt #' . $s['no'] . ' · ' . $s['basl
 
 <?php if ($s): ?>
 <div class="row even">
-  <div class="card">
+  <div class="card" id="tahsilat">
     <h2>💵 Tahsilatlar</h2>
     <?php if ($odemeler): ?><div class="list"><?php foreach ($odemeler as $o): ?>
       <div class="li"><div class="grow"><b><?= para($o['tutar']) ?></b> <small class="muted">· <?= ODEME_YONTEMLERI[$o['yontem']] ?> · <?= date('d.m.Y', strtotime($o['tarih'])) ?></small><?= $o['aciklama'] ? '<br><small class="muted">' . e($o['aciklama']) . '</small>' : '' ?></div>
         <form method="post" onsubmit="return confirm('Ödeme silinsin mi?')"><?= csrf_field() ?><input type="hidden" name="islem" value="odeme_sil"><input type="hidden" name="oid" value="<?= $o['id'] ?>"><button class="btn btn-red">Sil</button></form></div>
     <?php endforeach; ?></div><?php else: ?><p class="muted">Henüz ödeme alınmadı.</p><?php endif; ?>
-    <form method="post" class="form" style="margin-top:14px"><?= csrf_field() ?><input type="hidden" name="islem" value="odeme_ekle">
-      <label>Tutar (₺)<input class="inp num" name="tutar" inputmode="decimal" required placeholder="<?= $h['kalan'] > 0 ? e($fmt($h['kalan'])) : '0,00' ?>" value="<?= $h['kalan'] > 0 ? e($fmt($h['kalan'])) : '' ?>"></label>
-      <label>Ödeme şekli<select class="inp" name="yontem"><?php foreach (ODEME_YONTEMLERI as $k => $ad): ?><option value="<?= $k ?>"><?= $ad ?></option><?php endforeach; ?></select></label>
-      <label>Tarih<input class="inp" type="date" name="tarih" value="<?= date('Y-m-d') ?>"></label>
-      <label>Açıklama<input class="inp" name="aciklama" maxlength="200" placeholder="İsteğe bağlı"></label>
-      <div class="full"><button class="btn btn-main">+ Tahsilat ekle</button></div>
-    </form>
+    <div class="odeme-ozet"><span>Toplam <b><?= para($h['toplam']) ?></b></span><span>Alınan <b><?= para($h['odenen']) ?></b></span><span>Kalan <b class="<?= $h['kalan'] > 0.009 ? 'down' : 'up' ?>"><?= para(max(0, $h['kalan'])) ?></b></span></div>
+    <?php if ($h['toplam'] <= 0): ?><p class="notice n-amber" style="margin:10px 0 0">Bu kaydın tutarı 0 görünüyor. Yukarıdaki <b>İşçilik ve parçalar</b> bölümüne fiyatları yaz; tahsilat eklediğinde fiyatlar da kaydedilir.</p><?php endif; ?>
+    <div class="form" style="margin-top:14px">
+      <label>Tutar (₺)<input class="inp num" form="sform" name="o_tutar" id="o_tutar" inputmode="decimal" placeholder="0,00" value="<?= $h['kalan'] > 0 ? e($fmt($h['kalan'])) : '' ?>" data-odenen="<?= e((string)$h['odenen']) ?>"></label>
+      <label>Ödeme şekli<select class="inp" form="sform" name="o_yontem"><?php foreach (ODEME_YONTEMLERI as $k => $ad): ?><option value="<?= $k ?>"><?= $ad ?></option><?php endforeach; ?></select></label>
+      <label>Tarih<input class="inp" type="date" form="sform" name="o_tarih" value="<?= date('Y-m-d') ?>"></label>
+      <label>Açıklama<input class="inp" form="sform" name="o_aciklama" maxlength="200" placeholder="İsteğe bağlı"></label>
+      <div class="full"><button class="btn btn-main" form="sform" name="odeme_ekle" value="1">+ Tahsilat ekle</button> <small class="muted">Formdaki değişiklikler de kaydedilir.</small></div>
+    </div>
   </div>
-  <div class="card">
+  <div class="card" id="foto">
     <h2>📷 Fotoğraflar <span class="muted small"><?= count($fotolar) ?>/<?= MAKS_SERVIS_FOTO ?></span></h2>
-    <form method="post" enctype="multipart/form-data" class="inline-form"><?= csrf_field() ?><input type="hidden" name="islem" value="foto_ekle">
-      <select class="inp" name="etiket"><option value="once">İşlem öncesi</option><option value="sonra">İşlem sonrası</option><option value="diger">Diğer</option></select>
-      <input class="inp grow" type="file" name="fotolar[]" accept="image/*" multiple required>
-      <button class="btn btn-main">Yükle</button></form>
+    <div class="inline-form">
+      <select class="inp" form="sform" name="f_etiket"><option value="once">İşlem öncesi</option><option value="sonra">İşlem sonrası</option><option value="diger">Diğer</option></select>
+      <input class="inp grow" type="file" form="sform" name="fotolar[]" accept="image/*" multiple>
+      <button class="btn btn-main" form="sform" name="foto_ekle" value="1">Yükle</button></div>
     <small class="muted">Telefondan açınca kamerayla direkt çekebilirsin. Fotoğraflar raporda da görünür.</small>
     <?php if ($fotolar): ?><div class="photos" style="margin-top:14px"><?php foreach ($fotolar as $f): ?>
       <div class="ph"><a href="<?= e(upload_url($f['dosya'])) ?>" target="_blank"><img src="<?= e(upload_url($f['dosya'])) ?>" alt="" loading="lazy"></a><span class="phtag"><?= ['once' => 'Önce', 'sonra' => 'Sonra', 'diger' => 'Diğer'][$f['etiket']] ?></span>
@@ -314,7 +321,10 @@ panel_basla('usta', 'servis.php', $s ? 'Kayıt #' . $s['no'] . ' · ' . $s['basl
     });
     const isk = Math.min(ara, oku(form.iskonto.value)), kdv = parseInt(form.kdv.value, 10) || 0;
     document.getElementById('t_ara').textContent = yaz(ara) + ' ₺';
-    document.getElementById('t_top').textContent = yaz((ara - isk) * (1 + kdv / 100)) + ' ₺';
+    const top = (ara - isk) * (1 + kdv / 100);
+    document.getElementById('t_top').textContent = yaz(top) + ' ₺';
+    const ot = document.getElementById('o_tutar');
+    if (ot && !oElle) { const k = top - parseFloat(ot.dataset.odenen || '0'); ot.value = k > 0.009 ? yaz(k) : ''; }
   }
   function ekle(tur, ad) {
     const bos = [...body.querySelectorAll('.krow')].find(r => !r.querySelector('[name="k_aciklama[]"]').value);
@@ -328,7 +338,20 @@ panel_basla('usta', 'servis.php', $s ? 'Kayıt #' . $s['no'] . ' · ' . $s['basl
   document.getElementById('kekle').onclick = () => ekle();
   document.querySelectorAll('.chipbtn').forEach(b => b.onclick = () => ekle(b.dataset.tur, b.dataset.ad));
   body.addEventListener('click', e => { if (e.target.classList.contains('kdel')) { const rs = body.querySelectorAll('.krow'); if (rs.length > 1) e.target.closest('.krow').remove(); else rs[0].querySelectorAll('input').forEach(i => i.value = i.name === 'k_adet[]' ? '1' : ''); hesapla(); } });
+  const oTutar = document.getElementById('o_tutar');
+  let oElle = false, kirli = false, gonderiliyor = false;
+  if (oTutar) oTutar.addEventListener('input', () => oElle = true);
   form.addEventListener('input', hesapla); form.addEventListener('change', hesapla); hesapla();
+  // Formla ilişkili her alan (form="sform" olanlar dahil) değişince "kaydedilmemiş" say
+  document.addEventListener('input', e => { if (e.target.form === form) kirli = true; });
+  document.addEventListener('change', e => { if (e.target.form === form) kirli = true; });
+  form.addEventListener('submit', () => gonderiliyor = true);
+  window.addEventListener('beforeunload', e => { if (kirli && !gonderiliyor) { e.preventDefault(); e.returnValue = ''; } });
+  document.querySelectorAll('form:not(#sform)').forEach(f => f.addEventListener('submit', ev => {
+    if (kirli && !confirm('Kaydedilmemiş değişikliklerin var ve kaybolacak. Yine de devam edilsin mi?')) ev.preventDefault(); else gonderiliyor = true;
+  }));
+  const hd = document.getElementById('hizli_durum');
+  if (hd) hd.addEventListener('change', () => { form.durum.value = hd.value; gonderiliyor = true; form.requestSubmit ? form.requestSubmit() : form.submit(); });
   document.querySelectorAll('input.upper').forEach(i => i.addEventListener('input', () => { const p = i.selectionStart; i.value = i.value.toLocaleUpperCase('tr-TR'); i.setSelectionRange(p, p); }));
 
   // Plaka / seri no girilince geçmiş kaydı bul ve boş alanları doldur

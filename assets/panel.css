@@ -333,3 +333,8 @@ i.c{background:linear-gradient(180deg,#f08a8a,#d64545)}
   .stats.three{grid-template-columns:1fr}
   .stats.three .stat{flex-direction:row;align-items:center}
 }
+.odeme-ozet{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:var(--g50);border-radius:14px;padding:12px;text-align:center}
+.odeme-ozet span{font-size:12px;color:var(--muted);display:flex;flex-direction:column}
+.odeme-ozet b{font-family:var(--head);font-size:17px;color:var(--ink)}
+.odeme-ozet b.down{color:var(--red)}
+.odeme-ozet b.up{color:var(--g700)}
