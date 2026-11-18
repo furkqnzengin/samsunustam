@@ -19,6 +19,7 @@ $yorumlar = rows("SELECT y.*, u.ad_soyad FROM yorumlar y JOIN ustalar u ON u.id 
 
 panel_basla('admin', 'index.php', 'Genel Bakış', tarih_tr() . ' · Sitenin bugünkü durumu');
 ?>
+<?php $bekArayan = (int)val("SELECT COUNT(*) FROM is_arayanlar WHERE durum = 'beklemede'"); if ($bekArayan): ?><div class="notice n-amber"><b>🙋 <?= $bekArayan ?> iş arayan ilanı onay bekliyor.</b> <a href="ilanlar.php">İncele →</a></div><?php endif; ?>
 <?php if (is_dir(ROOT . '/kurulum')): ?><div class="notice n-red"><b>Güvenlik:</b> Kurulum tamamlandı. Sunucudaki <b>kurulum</b> klasörünü silmeyi unutma.</div><?php endif; ?>
 
 <div class="stats">

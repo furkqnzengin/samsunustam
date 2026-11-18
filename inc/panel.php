@@ -9,13 +9,15 @@ function panel_basla(string $rol, string $aktif, string $baslik, string $alt = '
     if ($rol === 'usta') {
         $usta = row('SELECT id, slug, ad_soyad, foto FROM ustalar WHERE kullanici_id = ?', [$k['id']]);
         $yeni = (int)val("SELECT COUNT(*) FROM talepler WHERE usta_id = ? AND durum = 'yeni'", [$usta['id']]);
-        $acik = 0;
+        $acik = $basvuru = 0;
         try { $acik = (int)val("SELECT COUNT(*) FROM servisler WHERE usta_id = ? AND durum = 'hazir'", [$usta['id']]); } catch (Throwable) {}
+        try { $basvuru = (int)val("SELECT COUNT(*) FROM ilan_basvurulari b JOIN ilanlar l ON l.id = b.ilan_id WHERE l.usta_id = ? AND b.durum = 'yeni'", [$usta['id']]); } catch (Throwable) {}
         $menu = [
             ['Atölyem', [
                 ['servis.php', '🛠️', 'Servis Takip', $acik],
                 ['servis-kayit.php', '➕', 'Yeni Kayıt', 0],
                 ['kasa.php', '💰', 'Gelir - Gider', 0],
+                ['ilanlar.php', '📢', 'Eleman Arıyorum', $basvuru],
             ]],
             ['Usta Paneli', [
                 ['index.php', '🏠', 'Panelim', 0],
@@ -35,6 +37,8 @@ function panel_basla(string $rol, string $aktif, string $baslik, string $alt = '
     } else {
         $bek = (int)val("SELECT COUNT(*) FROM ustalar WHERE durum = 'beklemede'");
         $yor = (int)val("SELECT COUNT(*) FROM yorumlar WHERE durum = 'beklemede'");
+        $ara = 0;
+        try { $ara = (int)val("SELECT COUNT(*) FROM is_arayanlar WHERE durum = 'beklemede'"); } catch (Throwable) {}
         $menu = [
             ['Yönetim', [
                 ['index.php', '📊', 'Genel Bakış', 0],
@@ -42,6 +46,7 @@ function panel_basla(string $rol, string $aktif, string $baslik, string $alt = '
                 ['ustalar.php', '👷', 'Ustalar', 0],
                 ['yorumlar.php', '⭐', 'Yorumlar', $yor],
                 ['talepler.php', '💬', 'İş Talepleri', 0],
+                ['ilanlar.php', '📢', 'İş İlanları', $ara],
             ]],
             ['İçerik', [
                 ['kategoriler.php', '🗂️', 'Kategoriler & Hizmetler', 0],

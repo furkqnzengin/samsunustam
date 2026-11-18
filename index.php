@@ -1,6 +1,7 @@
 <?php
 require __DIR__ . '/inc/init.php';
 require __DIR__ . '/inc/site.php';
+require __DIR__ . '/inc/is.php';
 
 // Kategoriler ve hizmetler (aktif usta sayılarıyla)
 $hizmetSay = [];
@@ -45,6 +46,8 @@ if (!$trendGercek) {
 $trendMax = max(1, ...array_map(fn($t) => (int)$t['bu'], $trend ?: [['bu' => 1]]));
 
 $oneCikan = rows(usta_kart_sql() . ' LIMIT 3');
+$sonIlanlar = rows(ilan_sql() . ' ORDER BY l.olusturma DESC LIMIT 3');
+$arayanSay = (int)val("SELECT COUNT(*) FROM is_arayanlar WHERE durum = 'yayinda' AND bitis >= CURDATE()");
 
 // Arama cümlesindeki hizmet listesi: önce popüler olanlar
 $populer = array_filter(array_map('trim', explode(',', ayar('populer_hizmetler', 'Elektrikçi,Su Tesisatçısı,Kombi Tamiri,Boya Badana'))));
@@ -186,6 +189,25 @@ site_basla();
     <div class="step"><div class="c">2</div><h3>Komşuna sor</h3><p>Samsunlu müşterilerin yorumlarını ve puanlarını oku.</p></div>
     <div class="step"><div class="c">3</div><h3>Ara, anlaş</h3><p>Aracı yok, komisyon yok. Ustayla doğrudan konuş.</p></div>
   </div>
+</div></section>
+
+<section id="kariyer" style="padding-top:0"><div class="wrap">
+  <div class="shead"><div><span class="num">06 — KARİYER</span><h2>İş arayanla eleman arayan burada buluşuyor.</h2></div><a class="link" href="<?= url('isler.php') ?>">Tüm iş ilanları →</a></div>
+  <div class="career">
+    <a class="ccard" href="<?= url('is-ara.php') ?>"><div class="cic">🙋</div><h3>İş mi arıyorsun?</h3><p>Ücretsiz "iş arıyorum" ilanı ver; eleman arayan Samsunlu ustalar seni bulsun. Üyelik gerekmez.</p><span class="btn btn-dark">İş arıyorum ilanı ver →</span></a>
+    <a class="ccard alt" href="<?= url(kullanici() && kullanici()['rol'] === 'usta' ? 'usta/ilanlar.php' : 'is-arayanlar.php') ?>"><div class="cic">📢</div><h3>Eleman mı arıyorsun?</h3><p>Usta panelinden kalfa, çırak ya da usta ilanı aç. <?= $arayanSay ? $arayanSay . ' kişi şu an iş arıyor.' : 'İş arayanlara göz at.' ?></p><span class="btn btn-yellow">Eleman bul →</span></a>
+  </div>
+  <?php if ($sonIlanlar): ?>
+    <div class="jobs" style="margin-top:18px">
+      <?php foreach ($sonIlanlar as $l): ?>
+        <a class="job" href="<?= url('isler.php?id=' . $l['id']) ?>">
+          <div class="jtop"><b><?= e($l['baslik']) ?></b><?php if ($l['ucret']): ?><span class="tag y">💰 <?= e($l['ucret']) ?></span><?php endif; ?></div>
+          <div class="jmeta"><span>📍 <?= e($l['ilce_ad'] ?? 'Samsun') ?></span><span>🕒 <?= e($l['calisma']) ?></span></div>
+          <div class="jfoot"><span><?= e($l['ad_soyad']) ?></span><small class="muted"><?= zaman_once($l['olusturma']) ?></small></div>
+        </a>
+      <?php endforeach; ?>
+    </div>
+  <?php endif; ?>
 </div></section>
 
 <div class="wrap"><div class="join">

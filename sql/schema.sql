@@ -241,3 +241,60 @@ CREATE TABLE IF NOT EXISTS kasa (
   INDEX (usta_id, tarih),
   FOREIGN KEY (usta_id) REFERENCES ustalar(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+-- ===== İş ilanları: ustaların eleman ilanları ve iş arayanlar =====
+CREATE TABLE IF NOT EXISTS ilanlar (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  usta_id INT UNSIGNED NOT NULL,
+  baslik VARCHAR(120) NOT NULL,
+  hizmet_id INT UNSIGNED NULL,
+  ilce_id INT UNSIGNED NULL,
+  calisma VARCHAR(40) NOT NULL,
+  tecrube VARCHAR(40) NOT NULL,
+  ucret VARCHAR(80) NULL,
+  aciklama TEXT NOT NULL,
+  tel_goster TINYINT(1) NOT NULL DEFAULT 1,
+  basvuru_al TINYINT(1) NOT NULL DEFAULT 1,
+  durum ENUM('aktif','pasif','doldu','gizli') NOT NULL DEFAULT 'aktif',
+  bitis DATE NOT NULL,
+  goruntulenme INT UNSIGNED NOT NULL DEFAULT 0,
+  olusturma DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX (durum, bitis),
+  FOREIGN KEY (usta_id) REFERENCES ustalar(id) ON DELETE CASCADE,
+  FOREIGN KEY (hizmet_id) REFERENCES hizmetler(id) ON DELETE SET NULL,
+  FOREIGN KEY (ilce_id) REFERENCES ilceler(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+CREATE TABLE IF NOT EXISTS ilan_basvurulari (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  ilan_id INT UNSIGNED NOT NULL,
+  ad VARCHAR(80) NOT NULL,
+  telefon VARCHAR(20) NOT NULL,
+  mesaj TEXT NULL,
+  durum ENUM('yeni','goruldu','olumlu','olumsuz') NOT NULL DEFAULT 'yeni',
+  ip VARCHAR(45) NULL,
+  olusturma DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (ilan_id) REFERENCES ilanlar(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+CREATE TABLE IF NOT EXISTS is_arayanlar (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  ad VARCHAR(80) NOT NULL,
+  telefon VARCHAR(20) NOT NULL,
+  whatsapp TINYINT(1) NOT NULL DEFAULT 1,
+  hizmet_id INT UNSIGNED NULL,
+  meslek VARCHAR(100) NOT NULL,
+  ilce_id INT UNSIGNED NULL,
+  tecrube VARCHAR(40) NOT NULL,
+  calisma VARCHAR(40) NOT NULL,
+  aciklama TEXT NULL,
+  durum ENUM('beklemede','yayinda','gizli','kaldirildi') NOT NULL DEFAULT 'beklemede',
+  token CHAR(32) NOT NULL,
+  ip VARCHAR(45) NULL,
+  bitis DATE NOT NULL,
+  olusturma DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY (token),
+  INDEX (durum, bitis),
+  FOREIGN KEY (hizmet_id) REFERENCES hizmetler(id) ON DELETE SET NULL,
+  FOREIGN KEY (ilce_id) REFERENCES ilceler(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;

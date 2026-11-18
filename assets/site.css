@@ -356,3 +356,39 @@ img.av{object-fit:cover}
 .ask .sent input::placeholder{color:#9fcbb3}
 .ask .sent input:focus{border-bottom-color:var(--g500)}
 .ask .nowrap{display:inline-flex;align-items:baseline;white-space:nowrap}
+
+/* ===== Kariyer / iş ilanları ===== */
+.btn-yellow{background:var(--accent);color:#2b2100}
+.career{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.ccard{background:#fff;border:1px solid var(--line);border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:10px;align-items:flex-start;transition:.2s}
+.ccard:hover{box-shadow:var(--shadow);transform:translateY(-3px)}
+.ccard.alt{background:var(--g900);color:#fff;border-color:var(--g900)}
+.ccard.alt p{color:#b9e0cb}
+.ccard h3{font-size:28px;color:inherit}
+.ccard p{color:var(--muted);flex:1}
+.cic{font-size:40px}
+.career-switch{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.career-switch a{padding:9px 16px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font-weight:600;color:var(--muted)}
+.career-switch a b{margin-left:4px;color:var(--ink)}
+.career-switch a.on{background:var(--g900);color:#fff;border-color:var(--g900)}
+.career-switch a.on b{color:var(--g300)}
+.career-switch a.cta{margin-left:auto;background:var(--accent);border-color:var(--accent);color:#2b2100}
+.jobs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.job{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:10px;transition:.2s;color:inherit}
+a.job:hover{box-shadow:var(--shadow);transform:translateY(-2px);border-color:var(--g300)}
+.jtop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.jtop b{font-family:var(--head);font-size:18px;color:var(--g950);line-height:1.2}
+.seeker .jtop{justify-content:flex-start;align-items:center}
+.seeker .av{width:44px;height:44px;border-radius:14px;font-size:15px}
+.jmeta{display:flex;flex-wrap:wrap;gap:6px}
+.jmeta span{background:var(--g50);border-radius:10px;padding:4px 9px;font-size:12.5px;color:var(--muted)}
+.job p{font-size:14px}
+.jfoot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:auto;padding-top:10px;border-top:1px dashed var(--line);font-size:13px;font-weight:600;flex-wrap:wrap}
+.employer{display:flex;align-items:center;gap:12px}
+.employer .av{width:52px;height:52px;border-radius:16px}
+.employer .link{margin-left:auto}
+.savebox{background:#fff;border:1.5px dashed var(--g300);border-radius:18px;padding:16px;margin:18px 0}
+.savebox input{width:100%;margin-top:10px;font:inherit;font-size:13px;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--g50)}
+.btn-line{border:1.5px solid var(--g900);color:var(--g900);background:transparent}
+@media (max-width:1000px){.jobs{grid-template-columns:1fr 1fr}}
+@media (max-width:640px){.career{grid-template-columns:1fr}.jobs{grid-template-columns:1fr}.ccard h3{font-size:24px}.career-switch a.cta{margin-left:0}}

@@ -22,7 +22,7 @@ function site_basla(string $baslik = '', string $aciklama = ''): void
 <body>
 <header><div class="wrap">
   <a class="logo" href="<?= url() ?>"><div class="mark"><?= LOGO_SVG ?></div><span>Samsun<b>Ustam</b></span></a>
-  <nav><a href="<?= url('#hizmetler') ?>">Hizmetler</a><a href="<?= url('ara.php') ?>">Ustalar</a><a href="<?= url('#ilceler') ?>">İlçeler</a><a href="<?= url('#nasil') ?>">Nasıl Çalışır?</a></nav>
+  <nav><a href="<?= url('#hizmetler') ?>">Hizmetler</a><a href="<?= url('ara.php') ?>">Ustalar</a><a href="<?= url('isler.php') ?>">İş İlanları</a><a href="<?= url('#nasil') ?>">Nasıl Çalışır?</a></nav>
   <div class="hbtns">
   <?php if ($k): ?>
     <a class="btn btn-dark" href="<?= url($k['rol'] === 'admin' ? 'yonetim/' : 'usta/') ?>">Panelim →</a>
@@ -62,7 +62,7 @@ function site_bitir(): void
       <?php endforeach; endif; ?>
     </div></div>
   </div>
-  <div class="fbot"><span>© <?= date('Y') ?> Samsun Ustam</span><div><a href="<?= url('kayit.php') ?>">Usta Kaydı</a><a href="<?= url('gizlilik.php') ?>">Gizlilik & KVKK</a><a href="<?= url('giris.php') ?>">Giriş</a></div></div>
+  <div class="fbot"><span>© <?= date('Y') ?> Samsun Ustam</span><div><a href="<?= url('isler.php') ?>">İş İlanları</a><a href="<?= url('is-ara.php') ?>">İş Arıyorum</a><a href="<?= url('kayit.php') ?>">Usta Kaydı</a><a href="<?= url('gizlilik.php') ?>">Gizlilik & KVKK</a><a href="<?= url('giris.php') ?>">Giriş</a></div></div>
 </div></footer>
 </body>
 </html>

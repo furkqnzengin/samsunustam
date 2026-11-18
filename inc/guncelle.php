@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 // Veritabanı sürümü. Kod güncellendiğinde gereken tablo/veri değişiklikleri
 // ilk istekte otomatik uygulanır; kurulumu tekrarlamak gerekmez.
-const DB_SURUM = 3;
+const DB_SURUM = 4;
 
 /** schema.sql'deki tüm CREATE TABLE IF NOT EXISTS ifadelerini çalıştırır (eksik tabloları oluşturur). */
 function sema_uygula(): void
@@ -59,6 +59,10 @@ function db_guncelle(): void
         // Sürüm 3: servis takip ve gelir-gider
         kolon_ekle('ustalar', 'servis_sektor', 'VARCHAR(20) NULL');
         kolon_ekle('ustalar', 'rapor_notu', 'TEXT NULL');
+        sema_uygula();
+    }
+    if ($s < 4) {
+        // Sürüm 4: iş ilanları ve iş arayanlar
         sema_uygula();
     }
     ayar_kaydet('db_surum', (string)DB_SURUM);

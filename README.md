@@ -26,6 +26,11 @@ Samsun'daki ustaları listeleyen yerel usta rehberi. Düz PHP + MySQL ile yazıl
 - Müşteriye yazdırılabilir rapor ve WhatsApp ile gönderilen rapor linki (`rapor.php`)
 - Aylık gelir-gider, alacak listesi, Excel'e (CSV) aktarma
 
+**İş ilanları** (`/isler.php`, `/is-ara.php`, `/is-arayanlar.php`, `/usta/ilanlar.php`)
+- Ustalar usta panelinden eleman ilanı açar, başvurular panele gelir (görüşülecek / uygun değil)
+- İş arayanlar üyeliksiz ilan verir; ilan yönetici onayıyla yayına çıkar, özel linkle düzenlenir/kaldırılır
+- İş arayanların telefonu sadece giriş yapmış ustalara görünür
+
 **Yönetim paneli** (`/yonetim`)
 - Usta başvurularını onaylama / reddetme, askıya alma, silme
 - Belgeli rozeti verme, paket atama (bitiş tarihli)
