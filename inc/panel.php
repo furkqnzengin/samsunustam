@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/site.php'; // LOGO_SVG
+require_once __DIR__ . '/site.php';
 
 function panel_basla(string $rol, string $aktif, string $baslik, string $alt = ''): void
 {
@@ -67,14 +67,19 @@ function panel_basla(string $rol, string $aktif, string $baslik, string $alt = '
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title><?= e($baslik) ?> – <?= $rol === 'usta' ? 'Usta Paneli' : 'Yönetim' ?> – Samsun Ustam</title>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="<?= url('assets/marka/favicon.svg') ?>" type="image/svg+xml">
+<link rel="icon" href="<?= url('assets/marka/favicon-32.png') ?>" sizes="32x32">
+<link rel="apple-touch-icon" href="<?= url('assets/marka/apple-touch-icon.png') ?>">
+<meta name="theme-color" content="#852FFF">
 <link rel="stylesheet" href="<?= asset('assets/panel.css') ?>">
 </head>
 <body>
-<div class="mobilebar"><a class="logo" href="index.php"><div class="mark"><?= LOGO_SVG ?></div><span>Samsun<b>Ustam</b><?= $rol === 'admin' ? ' · Yönetim' : '' ?></span></a><a href="<?= e($cikis) ?>" class="mlogout" title="Çıkış">🚪</a></div>
+<div class="mobilebar"><a class="logo" href="index.php"><img class="brandlogo" src="<?= url('assets/marka/logo-yatay-beyaz.svg') ?>" alt="Samsun Ustam"><?= $rol === 'admin' ? '<span class="rolbadge">Yönetim</span>' : '' ?></a><a href="<?= e($cikis) ?>" class="mlogout" title="Çıkış">🚪</a></div>
 <div class="app">
   <aside class="side">
-    <a class="logo" href="<?= url() ?>"><div class="mark"><?= LOGO_SVG ?></div><span>Samsun<b>Ustam</b></span></a>
+    <a class="logo" href="<?= url() ?>"><img class="brandlogo" src="<?= url('assets/marka/logo-yatay-beyaz.svg') ?>" alt="Samsun Ustam"></a>
+    <span class="rolbadge side-rol"><?= $rol === 'admin' ? 'Yönetim Paneli' : 'Usta Paneli' ?></span>
     <?php foreach ($menu as [$grup, $items]): ?>
       <div class="tag"><?= e($grup) ?></div>
       <?php foreach ($items as [$href, $ic, $ad, $cnt]): ?>

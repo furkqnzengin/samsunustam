@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 
-const LOGO_SVG = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg>';
 
 function site_basla(string $baslik = '', string $aciklama = ''): void
 {
@@ -16,12 +15,16 @@ function site_basla(string $baslik = '', string $aciklama = ''): void
 <title><?= e($tamBaslik) ?></title>
 <meta name="description" content="<?= e($aciklama) ?>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="<?= url('assets/marka/favicon.svg') ?>" type="image/svg+xml">
+<link rel="icon" href="<?= url('assets/marka/favicon-32.png') ?>" sizes="32x32">
+<link rel="apple-touch-icon" href="<?= url('assets/marka/apple-touch-icon.png') ?>">
+<meta name="theme-color" content="#852FFF">
 <link rel="stylesheet" href="<?= asset('assets/site.css') ?>">
 </head>
 <body>
 <header><div class="wrap">
-  <a class="logo" href="<?= url() ?>"><div class="mark"><?= LOGO_SVG ?></div><span>Samsun<b>Ustam</b></span></a>
+  <a class="logo" href="<?= url() ?>" aria-label="Samsun Ustam ana sayfa"><img class="brandlogo" src="<?= url('assets/marka/logo-yatay.svg') ?>" alt="Samsun Ustam" width="160" height="45"></a>
   <nav><a href="<?= url('#hizmetler') ?>">Hizmetler</a><a href="<?= url('ara.php') ?>">Ustalar</a><a href="<?= url('isler.php') ?>">İş İlanları</a><a href="<?= url('#nasil') ?>">Nasıl Çalışır?</a></nav>
   <div class="hbtns">
   <?php if ($k): ?>
@@ -50,7 +53,7 @@ function site_bitir(): void
     ?>
 <footer><div class="wrap">
   <div class="ftop">
-    <div><div class="logo"><div class="mark"><?= LOGO_SVG ?></div><span>Samsun<b>Ustam</b></span></div>
+    <div><img class="brandlogo foot" src="<?= url('assets/marka/logo-yatay-beyaz.svg') ?>" alt="Samsun Ustam" width="180" height="51">
       <p>Samsun'un yerel usta rehberi. Mahallendeki ustayı bul, komşularının yorumlarını oku.</p>
       <?php if ($tel || $mail): ?><p><?= $tel ? '📞 ' . e(tel_goster($tel)) . '<br>' : '' ?><?= $mail ? '✉️ ' . e($mail) : '' ?></p><?php endif; ?>
     </div>

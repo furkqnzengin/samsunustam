@@ -2,6 +2,7 @@
 require __DIR__ . '/inc/init.php';
 require __DIR__ . '/inc/site.php';
 require __DIR__ . '/inc/is.php';
+require __DIR__ . '/inc/maskot.php';
 
 // Kategoriler ve hizmetler (aktif usta sayılarıyla)
 $hizmetSay = [];
@@ -90,6 +91,7 @@ site_basla();
   </div>
   <div class="stage">
     <div class="blob"></div>
+    <?= maskot_svg('#fff', '#852FFF', 'maskot hero-maskot') ?>
     <?php if ($oneCikan): $u = $oneCikan[0]; ?>
     <a class="float f1" href="<?= url('usta.php?u=' . $u['slug']) ?>">
       <div class="top"><?= $u['foto'] ? '<img class="av" src="' . e(upload_url($u['foto'])) . '" alt="">' : '<div class="av">' . e(initials($u['ad_soyad'])) . '</div>' ?><div><b><?= e($u['ad_soyad']) ?></b><small><?= e($u['meslek']) ?> · <?= e(explode(', ', $u['ilce_adlari'] ?? 'Samsun')[0]) ?></small></div></div>
@@ -102,7 +104,7 @@ site_basla();
     <div class="float f3"><?php if ($toplamYorum >= 10): ?><b><?= sayi($toplamYorum) ?></b><small>Samsunlu komşunun<br>onaylı yorumu</small><?php else: ?><b>17</b><small>ilçenin hepsinde<br>yerel ustalar</small><?php endif; ?></div>
   </div>
 </div>
-<div class="wave"><svg viewBox="0 0 1440 80" preserveAspectRatio="none" width="100%" height="70"><path d="M0 40 C240 80 480 0 720 30 C960 60 1200 10 1440 40 L1440 80 L0 80 Z" fill="#06291a"/></svg></div>
+<div class="wave"><svg viewBox="0 0 1440 80" preserveAspectRatio="none" width="100%" height="70"><path d="M0 40 C240 80 480 0 720 30 C960 60 1200 10 1440 40 L1440 80 L0 80 Z" fill="#22074F"/></svg></div>
 </div>
 
 <div class="sos"><div class="wrap">
@@ -230,7 +232,15 @@ function sfx() {
   const v = [...w].reverse().find(c => 'aeıioöuü'.includes(c)) || 'a';
   ek.textContent = "'" + ('fstkçşhp'.includes(w.slice(-1)) ? 't' : 'd') + ('eiöü'.includes(v) ? 'e' : 'a');
 }
-function boyut(el) { el.style.width = Math.max(4, (el.value || el.placeholder).length + 1.5) + 'ch'; }
+const olc = document.createElement('span');
+olc.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;left:-9999px';
+document.body.appendChild(olc);
+function boyut(el) {
+  olc.style.font = getComputedStyle(el).font;
+  olc.textContent = el.value || el.placeholder;
+  el.style.width = Math.ceil(olc.getBoundingClientRect().width + 40) + 'px'; // +40: öneri listesi oku ve iç boşluk
+}
+document.fonts && document.fonts.ready.then(() => [hiz, ilce].forEach(boyut));
 [hiz, ilce].forEach(el => { el.addEventListener('input', () => { boyut(el); if (el === ilce) sfx(); }); boyut(el); });
 sfx();
 document.querySelector('form.ask').addEventListener('submit', () => {

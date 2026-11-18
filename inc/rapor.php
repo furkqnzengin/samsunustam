@@ -24,13 +24,14 @@ function rapor_sayfasi(array $s, bool $ustaGoruyor): void
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Servis Raporu #<?= (int)$s['no'] ?> – <?= e($s['baslik']) ?></title>
+<link rel="icon" href="<?= url('assets/marka/favicon.svg') ?>" type="image/svg+xml">
 <style>
-:root{--g:#0f5132;--g2:#198754;--l:#dde8e2;--m:#5c6c63;--bg:#f2f9f5}
+:root{--g:#4609A8;--g2:#852FFF;--l:#E9DFF8;--m:#6E5A90;--bg:#F8F4FF}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#14231b;background:#eef3f0;font-size:13.5px;line-height:1.5}
-.bar{position:sticky;top:0;background:#06291a;color:#fff;padding:10px 16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;z-index:2}
-.bar button,.bar a{background:#fff;color:#06291a;border:0;border-radius:999px;padding:9px 18px;font:inherit;font-weight:700;cursor:pointer;text-decoration:none}
-.bar a.alt{background:#198754;color:#fff}
+body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#1F0C42;background:#F3EEFC;font-size:13.5px;line-height:1.5}
+.bar{position:sticky;top:0;background:#22074F;color:#fff;padding:10px 16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;z-index:2}
+.bar button,.bar a{background:#fff;color:#22074F;border:0;border-radius:999px;padding:9px 18px;font:inherit;font-weight:700;cursor:pointer;text-decoration:none}
+.bar a.alt{background:#852FFF;color:#fff}
 .page{max-width:820px;margin:20px auto;background:#fff;padding:36px 40px;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.08)}
 .head{display:flex;justify-content:space-between;gap:20px;border-bottom:3px solid var(--g);padding-bottom:16px;margin-bottom:18px}
 .head h1{font-size:22px;color:var(--g)}
@@ -137,7 +138,7 @@ td.r,th.r{text-align:right;white-space:nowrap}
 
   <div class="sign"><div>Teslim eden<br><b><?= e($u['ad_soyad']) ?></b></div><div>Teslim alan<br><b><?= e($s['musteri_ad']) ?></b></div></div>
   <?php if ($u['rapor_notu']): ?><div class="note"><?= e($u['rapor_notu']) ?></div><?php endif; ?>
-  <div class="foot">Bu rapor Samsun Ustam servis takip sistemiyle oluşturuldu · <?= date('d.m.Y H:i') ?></div>
+  <div class="foot"><img src="<?= url('assets/marka/logo-yatay.svg') ?>" alt="Samsun Ustam" height="26" style="vertical-align:middle;margin-right:8px">servis takip sistemiyle oluşturuldu · <?= date('d.m.Y H:i') ?></div>
 </div>
 </body>
 </html>

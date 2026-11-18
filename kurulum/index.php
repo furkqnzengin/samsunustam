@@ -57,7 +57,7 @@ if (!$dbHata && is_post() && !kurulu_mu()) {
 <link rel="stylesheet" href="<?= asset('assets/site.css') ?>">
 </head><body>
 <div class="auth-wrap"><div class="auth-card">
-  <a class="logo" href="<?= url() ?>"><span>Samsun<b>Ustam</b></span></a>
+  <a class="logo" href="<?= url() ?>"><img class="brandlogo" src="<?= url('assets/marka/logo-yatay.svg') ?>" alt="Samsun Ustam" width="160" height="45"></a>
   <h1>Kurulum</h1>
   <?php if ($dbHata): ?>
     <div class="flash flash-err"><?= e($dbHata) ?></div>
