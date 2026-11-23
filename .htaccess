@@ -7,7 +7,10 @@ DirectoryIndex index.php
   Require all denied
 </FilesMatch>
 
-# HTTPS'e yönlendirme (SSL kurulduktan sonra aşağıdaki 3 satırın başındaki # işaretini kaldırın)
-# RewriteEngine On
-# RewriteCond %{HTTPS} off
-# RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# Her ziyareti güvenli https adresine yönlendir (SSL kurulu)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
