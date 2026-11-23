@@ -18,7 +18,7 @@ if (is_post()) {
                 q('UPDATE kullanicilar SET sifre = ? WHERE id = ?', [password_hash($sifre, PASSWORD_DEFAULT), $k['id']]);
             }
             unset($_SESSION['rl']['giris']);
-            giris_yap($k);
+            giris_yap($k, (bool)post('hatirla'));
             $sonra = $_SESSION['sonra'] ?? '';
             unset($_SESSION['sonra']);
             global $CFG;
@@ -43,6 +43,7 @@ site_basla('Giriş yap');
       <?= csrf_field() ?>
       <label>E-posta<input name="eposta" type="email" required value="<?= e(post('eposta')) ?>" autocomplete="email"></label>
       <label>Şifre<input name="sifre" type="password" required autocomplete="current-password"></label>
+      <label class="chk"><input type="checkbox" name="hatirla" value="1" <?= !is_post() || post('hatirla') ? 'checked' : '' ?>> <span>Beni hatırla (bu cihazda 30 gün açık kalsın)</span></label>
       <button class="btn btn-dark btn-lg">Giriş yap</button>
       <p class="muted center">Şifreni mi unuttun? <?= ayar('site_telefon') ? 'Bize ulaş: ' . e(tel_goster(ayar('site_telefon'))) : 'Site yöneticisine ulaş.' ?></p>
       <p class="muted center">Usta mısın, hesabın yok mu? <a class="link" href="<?= url('kayit.php') ?>">Ücretsiz kaydol</a></p>

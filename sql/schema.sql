@@ -298,3 +298,15 @@ CREATE TABLE IF NOT EXISTS is_arayanlar (
   FOREIGN KEY (hizmet_id) REFERENCES hizmetler(id) ON DELETE SET NULL,
   FOREIGN KEY (ilce_id) REFERENCES ilceler(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_turkish_ci;
+
+-- "Beni hatırla" girişleri: tarayıcıda selector:dogrulayici çerezi, veritabanında doğrulayıcının özeti tutulur
+CREATE TABLE IF NOT EXISTS hatirla_tokenlari (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  kullanici_id INT UNSIGNED NOT NULL,
+  selector CHAR(18) NOT NULL UNIQUE,
+  dogrulayici CHAR(64) NOT NULL,
+  bitis DATETIME NOT NULL,
+  olusturma DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX (kullanici_id),
+  FOREIGN KEY (kullanici_id) REFERENCES kullanicilar(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

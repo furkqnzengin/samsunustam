@@ -21,7 +21,7 @@ if (is_post()) {
         if (!password_verify(post('mevcut'), $kayit['sifre'])) flash('Mevcut şifre yanlış.', 'err');
         elseif (mb_strlen(post('yeni')) < 8) flash('Yeni şifre en az 8 karakter olmalı.', 'err');
         elseif (post('yeni') !== post('yeni2')) flash('Yeni şifreler aynı değil.', 'err');
-        else { q('UPDATE kullanicilar SET sifre = ? WHERE id = ?', [password_hash(post('yeni'), PASSWORD_DEFAULT), $k['id']]); flash('Şifre değiştirildi.'); }
+        else { q('UPDATE kullanicilar SET sifre = ? WHERE id = ?', [password_hash(post('yeni'), PASSWORD_DEFAULT), $k['id']]); hatirla_hepsini_sil((int)$k['id'], true); flash('Şifre değiştirildi. Diğer cihazlardaki açık girişler kapatıldı.'); }
     }
     redirect('yonetim/ayarlar.php');
 }

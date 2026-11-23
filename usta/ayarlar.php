@@ -18,7 +18,7 @@ if (is_post()) {
         $yeni = post('yeni');
         if (mb_strlen($yeni) < 8) flash('Yeni şifre en az 8 karakter olmalı.', 'err');
         elseif ($yeni !== post('yeni2')) flash('Yeni şifreler birbiriyle aynı değil.', 'err');
-        else { q('UPDATE kullanicilar SET sifre = ? WHERE id = ?', [password_hash($yeni, PASSWORD_DEFAULT), $k['id']]); flash('Şifren değiştirildi.'); }
+        else { q('UPDATE kullanicilar SET sifre = ? WHERE id = ?', [password_hash($yeni, PASSWORD_DEFAULT), $k['id']]); hatirla_hepsini_sil((int)$k['id'], true); flash('Şifren değiştirildi. Diğer cihazlardaki açık girişler kapatıldı.'); }
     }
     redirect('usta/ayarlar.php');
 }

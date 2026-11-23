@@ -50,7 +50,7 @@ if (is_post()) {
         foreach (array_intersect($ilceIds, $valid) as $iid) q('INSERT INTO usta_ilce (usta_id, ilce_id) VALUES (?, ?)', [$usId, $iid]);
         q('UPDATE ustalar SET belge_dosya = ? WHERE id = ?', [belge_kaydet($_FILES['belge'], $belgeExt, $usId), $usId]);
         db()->commit();
-        giris_yap(['id' => $kid]);
+        giris_yap(['id' => $kid], true);
         flash('Hoş geldin! Başvurun alındı. Profilini tamamla; onaylandığında sitede yayına çıkacak.');
         redirect('usta/profil.php');
     }

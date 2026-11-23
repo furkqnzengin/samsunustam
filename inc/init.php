@@ -21,6 +21,15 @@ date_default_timezone_set('Europe/Istanbul');
 mb_internal_encoding('UTF-8');
 
 $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+// Oturumlar bu siteye özel klasörde ve 8 saat tutulur (paylaşımlı hostingde
+// başka sitelerin temizliği oturumu erken silmesin diye). Klasör açılamazsa varsayılan kullanılır.
+$oturumDizin = dirname(ROOT) . '/.samsunustam_oturum';
+if ((is_dir($oturumDizin) || @mkdir($oturumDizin, 0700)) && is_writable($oturumDizin)) {
+    session_save_path($oturumDizin);
+}
+ini_set('session.gc_maxlifetime', '28800');
+ini_set('session.gc_probability', '1'); // kendi klasörümüzü biz temizleriz
+ini_set('session.gc_divisor', '100');
 session_name('su_oturum');
 session_set_cookie_params([
     'path' => ($CFG['base'] ?: '') . '/',
@@ -40,3 +49,4 @@ require __DIR__ . '/auth.php';
 require __DIR__ . '/guncelle.php';
 
 db_guncelle();
+hatirla_dene();

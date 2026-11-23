@@ -53,6 +53,7 @@ if (is_post()) {
         case 'sifre':
             $yeni = bin2hex(random_bytes(4));
             q('UPDATE kullanicilar SET sifre = ? WHERE id = ?', [password_hash($yeni, PASSWORD_DEFAULT), $u['kullanici_id']]);
+            hatirla_hepsini_sil((int)$u['kullanici_id']);
             flash('Yeni geçici şifre: ' . $yeni . ' (ustaya ilet, giriş yapınca değiştirmesini söyle)');
             break;
     }

@@ -110,6 +110,10 @@ function panel_bitir(): void
   <?php foreach ($menu as [$grup, $items]): ?><div class="tag"><?= e($grup) ?></div><?php foreach ($items as [$href, $ic, $ad, $cnt]): ?><a class="<?= $aktif === $href ? 'on' : '' ?>" href="<?= e($href) ?>"><?= $ic ?> <?= e($ad) ?><?= $cnt ? '<span class="cnt">' . $cnt . '</span>' : '' ?></a><?php endforeach; ?><?php endforeach; ?>
   <div class="tag">Diğer</div><a href="<?= e($alt_link[0]) ?>" target="_blank"><?= e($alt_link[1]) ?></a><a href="<?= e($cikis) ?>">🚪 Çıkış Yap</a>
 </div></div>
+<script>
+// Panel açık kaldıkça oturumu canlı tut (5 dakikada bir)
+setInterval(() => { fetch('<?= url('canli.php') ?>', { credentials: 'same-origin', cache: 'no-store' }).catch(() => {}); }, 5 * 60 * 1000);
+</script>
 </body>
 </html>
 <?php
