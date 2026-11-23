@@ -75,7 +75,8 @@ td.r,th.r{text-align:right;white-space:nowrap}
 <div class="page">
   <div class="head">
     <div class="usta">
-      <h1><?= e($u['ad_soyad']) ?></h1>
+      <?php if (!empty($u['firma_logo'])): ?><img src="<?= e(upload_url($u['firma_logo'])) ?>" alt="" style="max-height:56px;max-width:200px;margin-bottom:6px;display:block"><?php endif; ?>
+      <h1><?= e(($u['firma_unvan'] ?? '') ?: $u['ad_soyad']) ?></h1>
       <b><?= e($u['meslek']) ?></b>
       <small>📞 <?= e(tel_goster($u['telefon'])) ?><?= $u['adres'] ? '<br>📍 ' . e($u['adres']) : '' ?></small>
     </div>
@@ -106,13 +107,13 @@ td.r,th.r{text-align:right;white-space:nowrap}
 
   <?php if ($kalemler): ?>
   <div class="sec"><h3>İşçilik ve parçalar</h3>
-    <table><tr><th>Açıklama</th><th>Tür</th><th class="r">Adet</th><th class="r">Birim fiyat</th><th class="r">Tutar</th></tr>
-      <?php foreach ($kalemler as $k): ?><tr><td><?= e($k['aciklama']) ?></td><td><?= e(KALEM_TURLERI[$k['tur']] ?? '') ?></td><td class="r"><?= $adet($k['adet']) ?></td><td class="r"><?= para($k['birim_fiyat']) ?></td><td class="r"><?= para((float)$k['adet'] * (float)$k['birim_fiyat']) ?></td></tr><?php endforeach; ?>
+    <table><tr><th>Açıklama</th><th>Tür</th><th class="r">Miktar</th><th class="r">Birim fiyat</th><th class="r">KDV</th><th class="r">Tutar</th></tr>
+      <?php foreach ($kalemler as $k): ?><tr><td><?= e($k['aciklama']) ?></td><td><?= e(KALEM_TURLERI[$k['tur']] ?? '') ?></td><td class="r"><?= $adet($k['adet']) ?> <?= e($k['birim'] ?? '') ?></td><td class="r"><?= para($k['birim_fiyat']) ?></td><td class="r">%<?= (int)($k['kdv'] ?? $s['kdv']) ?></td><td class="r"><?= para((float)$k['adet'] * (float)$k['birim_fiyat']) ?></td></tr><?php endforeach; ?>
     </table>
     <div class="tot">
-      <div><span>Ara toplam</span><span><?= para($h['ara']) ?></span></div>
+      <div><span>Ara toplam (KDV hariç)</span><span><?= para($h['ara']) ?></span></div>
       <?php if ($h['iskonto'] > 0): ?><div><span>İndirim</span><span>-<?= para($h['iskonto']) ?></span></div><?php endif; ?>
-      <?php if ((int)$s['kdv']): ?><div><span>KDV (%<?= (int)$s['kdv'] ?>)</span><span><?= para($h['kdv']) ?></span></div><?php endif; ?>
+      <?php if ($h['kdv'] > 0.009): ?><div><span>KDV</span><span><?= para($h['kdv']) ?></span></div><?php endif; ?>
       <div class="g"><span>Genel toplam</span><span><?= para($h['toplam']) ?></span></div>
       <?php if ($odemeler): ?><div><span>Ödenen</span><span><?= para($h['odenen']) ?></span></div>
         <div class="<?= $h['kalan'] > 0.009 ? 'k' : 'ok' ?>"><span><?= $h['kalan'] > 0.009 ? 'Kalan' : 'Durum' ?></span><span><?= $h['kalan'] > 0.009 ? para($h['kalan']) : 'Ödendi ✓' ?></span></div><?php endif; ?>

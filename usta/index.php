@@ -50,12 +50,12 @@ panel_basla('usta', 'index.php', "Hoş geldin, $ilkAd Usta 👋", $u['durum'] ==
 <?php endif; ?>
 
 <div class="card atolye">
-  <h2><?= $sektorTanim['ikon'] ?> Atölyem <a class="btn btn-main" style="color:#fff" href="servis-kayit.php">+ Yeni <?= e(tr_lower($sektorTanim['kayit'])) ?></a></h2>
+  <h2><?= $sektorTanim['ikon'] ?> Atölyem <a class="btn btn-main" style="color:#fff" href="kabul-kart.php?yeni=1">+ Yeni <?= e(tr_lower($sektorTanim['kayit'])) ?></a></h2>
   <div class="mini">
-    <a href="servis.php"><b><?= (int)$atolye['acik'] ?></b><small>açık kayıt</small></a>
-    <a href="servis.php?durum=hazir"><b><?= (int)$atolye['hazir'] ?></b><small>teslime hazır</small></a>
+    <a href="serviste.php"><b><?= (int)$atolye['acik'] ?></b><small>açık kayıt</small></a>
+    <a href="serviste.php?durum=hazir"><b><?= (int)$atolye['hazir'] ?></b><small>teslime hazır</small></a>
     <a href="kasa.php"><b><?= para($ayTahsilat - $ayGider) ?></b><small>bu ay net</small></a>
-    <a href="servis.php?durum=borclu"><b class="<?= (float)$atolye['alacak'] > 0 ? 'down' : '' ?>"><?= para(max(0, (float)$atolye['alacak'])) ?></b><small>alacak</small></a>
+    <a href="servis.php?d=tumu&borclu=1"><b class="<?= (float)$atolye['alacak'] > 0 ? 'down' : '' ?>"><?= para(max(0, (float)$atolye['alacak'])) ?></b><small>alacak</small></a>
   </div>
 </div>
 

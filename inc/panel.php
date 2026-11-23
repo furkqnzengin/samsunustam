@@ -7,31 +7,45 @@ function panel_basla(string $rol, string $aktif, string $baslik, string $alt = '
 {
     $k = kullanici();
     if ($rol === 'usta') {
-        $usta = row('SELECT id, slug, ad_soyad, foto FROM ustalar WHERE kullanici_id = ?', [$k['id']]);
+        $usta = row('SELECT * FROM ustalar WHERE kullanici_id = ?', [$k['id']]);
+        if (!function_exists('sektorler')) require_once __DIR__ . '/servis.php';
+        $stanim = sektorler()[usta_sektor($usta)];
         $yeni = (int)val("SELECT COUNT(*) FROM talepler WHERE usta_id = ? AND durum = 'yeni'", [$usta['id']]);
-        $acik = $basvuru = 0;
-        try { $acik = (int)val("SELECT COUNT(*) FROM servisler WHERE usta_id = ? AND durum = 'hazir'", [$usta['id']]); } catch (Throwable) {}
+        $basvuru = 0; $dsay = [];
+        try { foreach (rows("SELECT durum, COUNT(*) n FROM servisler WHERE usta_id = ? AND (durum NOT IN ('teslim','iptal') OR DATE(teslim_tarihi) = CURDATE()) GROUP BY durum", [$usta['id']]) as $r) $dsay[$r['durum']] = (int)$r['n']; } catch (Throwable) {}
         try { $basvuru = (int)val("SELECT COUNT(*) FROM ilan_basvurulari b JOIN ilanlar l ON l.id = b.ilan_id WHERE l.usta_id = ? AND b.durum = 'yeni'", [$usta['id']]); } catch (Throwable) {}
+        $servisAlt = [];
+        foreach (servis_durumlari() as $dk => [$dad]) if ($dk !== 'iptal') $servisAlt[] = ['serviste.php?durum=' . $dk, '·', $dad, $dsay[$dk] ?? 0, 'alt2'];
         $menu = [
-            ['Atölyem', [
-                ['servis.php', '🛠️', 'Servis Takip', $acik],
-                ['servis-kayit.php', '➕', 'Yeni Kayıt', 0],
-                ['kasa.php', '💰', 'Gelir - Gider', 0],
-                ['ilanlar.php', '📢', 'Eleman Arıyorum', $basvuru],
+            ['Servis', array_merge([
+                ['kabul-kart.php?yeni=1', '➕', 'Servis Kabul', 0, '', 'kabul'],
+                ['serviste.php', '🔧', 'Serviste Bugün', array_sum($dsay) - ($dsay['teslim'] ?? 0)],
+            ], $servisAlt, [
+                ['servis.php', '🕘', 'Servis Geçmişi', 0],
+            ])],
+            ['Kartlar', [
+                ['musteriler.php', '👥', 'Müşteri Kartları', 0],
+                ['kartlar.php', $stanim['ikon'], $stanim['kartlar'] ?? 'Kartlar', 0],
             ]],
-            ['Usta Paneli', [
+            ['Muhasebe', [
+                ['kasa.php', '💰', 'Gelir - Gider', 0],
+            ]],
+            ['Samsun Ustam', [
                 ['index.php', '🏠', 'Panelim', 0],
                 ['profil.php', '👤', 'Profilim', 0],
                 ['fotograflar.php', '🖼️', 'İş Fotoğraflarım', 0],
                 ['talepler.php', '💬', 'İş Talepleri', $yeni],
                 ['yorumlar.php', '⭐', 'Yorumlarım', 0],
+                ['ilanlar.php', '📢', 'Eleman Arıyorum', $basvuru],
             ]],
-            ['Hesap', [
+            ['Ayarlar', [
+                ['firma.php', '🏢', 'Firma Ayarları', 0],
+                ['personel.php', '🧑‍🔧', 'Personel', 0],
                 ['ayarlar.php', '⚙️', 'Hesap Ayarları', 0],
             ]],
         ];
         $alt_link = ['../usta.php?u=' . $usta['slug'], '↗ Profilimi Görüntüle'];
-        $tab = [['index.php', '🏠', 'Panel'], ['servis.php', '🛠️', 'Servis'], ['servis-kayit.php', '➕', 'Yeni'], ['kasa.php', '💰', 'Kasa']];
+        $tab = [['index.php', '🏠', 'Panel'], ['serviste.php', '🔧', 'Serviste'], ['kabul-kart.php?yeni=1', '➕', 'Kabul', 'kabul'], ['kasa.php', '💰', 'Kasa']];
         $avatar = $usta['foto'] ? '<img class="av" src="' . e(upload_url($usta['foto'])) . '" alt="">' : '<div class="av">' . e(initials($usta['ad_soyad'])) . '</div>';
         $isim = $usta['ad_soyad'];
     } else {
@@ -82,9 +96,7 @@ function panel_basla(string $rol, string $aktif, string $baslik, string $alt = '
     <span class="rolbadge side-rol"><?= $rol === 'admin' ? 'Yönetim Paneli' : 'Usta Paneli' ?></span>
     <?php foreach ($menu as [$grup, $items]): ?>
       <div class="tag"><?= e($grup) ?></div>
-      <?php foreach ($items as [$href, $ic, $ad, $cnt]): ?>
-        <a class="<?= $aktif === $href ? 'on' : '' ?>" href="<?= e($href) ?>"><?= $ic ?> <?= e($ad) ?><?= $cnt ? '<span class="cnt">' . $cnt . '</span>' : '' ?></a>
-      <?php endforeach; ?>
+      <?php foreach ($items as $it): ?><?= menu_link($it, $aktif) ?><?php endforeach; ?>
     <?php endforeach; ?>
     <div class="bottom"><a href="<?= e($alt_link[0]) ?>" target="_blank"><?= e($alt_link[1]) ?></a><a href="<?= e($cikis) ?>">🚪 Çıkış Yap</a></div>
   </aside>
@@ -98,16 +110,24 @@ function panel_basla(string $rol, string $aktif, string $baslik, string $alt = '
     $GLOBALS['__tabbar'] = [$tab, $aktif, $menu, $alt_link, $cikis];
 }
 
+/** Menü bağlantısı: [href, ikon, ad, sayı, sınıf, aktif anahtarı] */
+function menu_link(array $it, string $aktif): string
+{
+    [$href, $ic, $ad, $cnt] = $it;
+    $cls = trim(($it[4] ?? '') . ($aktif === ($it[5] ?? $href) ? ' on' : ''));
+    return '<a class="' . $cls . '" href="' . e($href) . '">' . $ic . ' ' . e($ad) . ($cnt ? '<span class="cnt">' . $cnt . '</span>' : '') . '</a>';
+}
+
 function panel_bitir(): void
 {
     [$tab, $aktif, $menu, $alt_link, $cikis] = $GLOBALS['__tabbar'];
     ?>
   </main>
 </div>
-<nav class="tabbar"><?php foreach ($tab as [$href, $ic, $ad]): ?><a class="<?= $aktif === $href ? 'on' : '' ?>" href="<?= e($href) ?>"><span><?= $ic ?></span><?= e($ad) ?></a><?php endforeach; ?>
+<nav class="tabbar"><?php foreach ($tab as $t): [$href, $ic, $ad] = $t; ?><a class="<?= $aktif === ($t[3] ?? $href) || ($aktif !== $href && str_starts_with($aktif, $href . '?') && $href !== 'index.php') ? 'on' : '' ?>" href="<?= e($href) ?>"><span><?= $ic ?></span><?= e($ad) ?></a><?php endforeach; ?>
   <a href="#" onclick="document.body.classList.toggle('msheet-acik');return false"><span>☰</span>Menü</a></nav>
 <div class="msheet" style="display:none" onclick="if(event.target===this)document.body.classList.remove('msheet-acik')"><div class="msheet-in">
-  <?php foreach ($menu as [$grup, $items]): ?><div class="tag"><?= e($grup) ?></div><?php foreach ($items as [$href, $ic, $ad, $cnt]): ?><a class="<?= $aktif === $href ? 'on' : '' ?>" href="<?= e($href) ?>"><?= $ic ?> <?= e($ad) ?><?= $cnt ? '<span class="cnt">' . $cnt . '</span>' : '' ?></a><?php endforeach; ?><?php endforeach; ?>
+  <?php foreach ($menu as [$grup, $items]): ?><div class="tag"><?= e($grup) ?></div><?php foreach ($items as $it): ?><?= menu_link($it, $aktif) ?><?php endforeach; ?><?php endforeach; ?>
   <div class="tag">Diğer</div><a href="<?= e($alt_link[0]) ?>" target="_blank"><?= e($alt_link[1]) ?></a><a href="<?= e($cikis) ?>">🚪 Çıkış Yap</a>
 </div></div>
 <script>

@@ -1,96 +1,79 @@
 <?php
+// Servis geçmişi: tarih / etiket / durum filtreleri, arama, Excel
 require __DIR__ . '/../inc/init.php';
 require __DIR__ . '/../inc/panel.php';
 require __DIR__ . '/../inc/servis.php';
+require __DIR__ . '/../inc/kabul.php';
 $u = aktif_usta();
 $uid = (int)$u['id'];
-
-if (is_post()) {
-    csrf_check();
-    $sek = post('servis_sektor');
-    q('UPDATE ustalar SET servis_sektor = ?, rapor_notu = ? WHERE id = ?', [isset(sektorler()[$sek]) ? $sek : null, mb_substr(post('rapor_notu'), 0, 1500) ?: null, $uid]);
-    flash('Servis ayarların kaydedildi.');
-    redirect('usta/servis.php');
-}
-
-$sektor = usta_sektor($u);
-$tanim = sektorler()[$sektor];
+$tanim = sektorler()[usta_sektor($u)];
 $durumlar = servis_durumlari();
 
-$f = get('durum', 'acik');
+$donem = get('d', 'ay');
+$bas = get('bas'); $bit = get('bit');
+$etiket = mb_substr(get('etiket'), 0, 60);
+$durum = get('durum');
 $ara = mb_substr(get('q'), 0, 60);
-$where = ['s.usta_id = ?'];
-$params = [$uid];
-if ($f === 'acik') $where[] = "s.durum IN ('kabul','islemde','parca','hazir')";
-elseif ($f === 'borclu') $where[] = "s.durum <> 'iptal'";
-elseif (isset($durumlar[$f])) { $where[] = 's.durum = ?'; $params[] = $f; }
+$borclu = get('borclu') === '1';
+
+[$t0, $t1] = match ($donem) {
+    'bugun' => [date('Y-m-d'), date('Y-m-d')],
+    'hafta' => [date('Y-m-d', strtotime('monday this week')), date('Y-m-d')],
+    'yil' => [date('Y-01-01'), date('Y-m-d')],
+    'tumu' => [null, null],
+    'aralik' => [preg_match('/^\d{4}-\d{2}-\d{2}$/', $bas) ? $bas : null, preg_match('/^\d{4}-\d{2}-\d{2}$/', $bit) ? $bit : null],
+    default => [date('Y-m-01'), date('Y-m-d')],
+};
+$where = ["s.usta_id = $uid"];
+$params = [];
+if ($t0) { $where[] = 'DATE(s.giris_tarihi) >= ?'; $params[] = $t0; }
+if ($t1) { $where[] = 'DATE(s.giris_tarihi) <= ?'; $params[] = $t1; }
+if ($etiket !== '') { $where[] = 's.etiket = ?'; $params[] = $etiket; }
+if (isset($durumlar[$durum])) { $where[] = 's.durum = ?'; $params[] = $durum; }
 if ($ara !== '') {
     $where[] = '(s.baslik LIKE ? OR s.musteri_ad LIKE ? OR s.musteri_firma LIKE ? OR s.anahtar LIKE ? OR s.musteri_tel LIKE ? OR s.no = ?)';
-    $like = "%$ara%";
-    array_push($params, $like, $like, $like, '%' . anahtar_norm($ara) . '%', '%' . (preg_replace('/\D/', '', $ara) ?: '#') . '%', (int)$ara);
+    array_push($params, "%$ara%", "%$ara%", "%$ara%", '%' . anahtar_norm($ara) . '%', '%' . (preg_replace('/\D/', '', $ara) ?: '#') . '%', (int)$ara);
 }
-$tutar = servis_tutar_sql();
-$odenen = servis_odenen_sql();
-$sql = "SELECT * FROM (SELECT s.*, $tutar AS toplam, $odenen AS odenen FROM servisler s WHERE " . implode(' AND ', $where) . ') x';
-if ($f === 'borclu') $sql .= ' WHERE toplam - odenen > 0.009';
-$sql .= " ORDER BY durum IN ('teslim','iptal'), giris_tarihi DESC LIMIT 300";
+$sql = servis_liste_sql(implode(' AND ', $where)) . ($borclu ? " WHERE durum <> 'iptal' AND toplam - odenen > 0.009" : '') . ' ORDER BY giris_tarihi DESC LIMIT 1000';
 $liste = rows($sql, $params);
 
-$ozet = row("SELECT
-    SUM(s.durum IN ('kabul','islemde','parca','hazir')) AS acik,
-    SUM(s.durum = 'hazir') AS hazir,
-    SUM(CASE WHEN s.durum <> 'iptal' THEN $tutar - $odenen ELSE 0 END) AS alacak
-  FROM servisler s WHERE s.usta_id = ?", [$uid]);
-$buAy = (float)val("SELECT COALESCE(SUM(o.tutar),0) FROM servis_odemeleri o JOIN servisler s ON s.id = o.servis_id WHERE s.usta_id = ? AND o.tarih >= DATE_FORMAT(CURDATE(), '%Y-%m-01')", [$uid]);
+if (get('csv') === '1') {
+    csv_gonder('servis-gecmisi.csv', ['Kayıt no', 'Giriş', 'Teslim', 'Müşteri', $tanim['kayit'], 'Toplam', 'Ödenen', 'Kalan', 'Teknisyen', 'Etiket', 'Durum'],
+        array_map(fn($r) => [$r['no'], date('d.m.Y H:i', strtotime($r['giris_tarihi'])), $r['teslim_tarihi'] ? date('d.m.Y H:i', strtotime($r['teslim_tarihi'])) : '',
+            $r['musteri_ad'], $r['baslik'], number_format((float)$r['toplam'], 2, ',', ''), number_format((float)$r['odenen'], 2, ',', ''),
+            number_format((float)$r['toplam'] - (float)$r['odenen'], 2, ',', ''), $r['teknisyen'], $r['etiket'], $durumlar[$r['durum']][0]], $liste));
+}
 
-panel_basla('usta', 'servis.php', 'Servis Takip', $tanim['ikon'] . ' ' . e($tanim['ad']) . ' · ' . e($tanim['liste']));
+$toplam = array_sum(array_map(fn($r) => $r['durum'] === 'iptal' ? 0 : (float)$r['toplam'], $liste));
+$kalan = array_sum(array_map(fn($r) => $r['durum'] === 'iptal' ? 0 : max(0, (float)$r['toplam'] - (float)$r['odenen']), $liste));
+$etiketler = array_column(rows('SELECT DISTINCT etiket FROM servisler WHERE usta_id = ? AND etiket IS NOT NULL ORDER BY etiket', [$uid]), 'etiket');
+$qs = fn(array $ek) => '?' . http_build_query(array_filter(array_merge(['d' => $donem, 'bas' => $bas, 'bit' => $bit, 'etiket' => $etiket, 'durum' => $durum, 'q' => $ara, 'borclu' => $borclu ? '1' : ''], $ek), 'strlen'));
+
+panel_basla('usta', 'servis.php', 'Servis Geçmişi', count($liste) . ' kayıt · toplam ' . para($toplam) . ($kalan > 0 ? ' · <span class="down">alacak ' . para($kalan) . '</span>' : ''));
 ?>
-<div class="stats">
-  <div class="stat"><div class="ic">🛠️</div><div><small>Açık kayıt</small><b><?= (int)$ozet['acik'] ?></b><span class="up"><?= (int)$ozet['hazir'] ?> tanesi teslime hazır</span></div></div>
-  <a class="stat" href="kasa.php"><div class="ic">💰</div><div><small>Bu ay tahsilat</small><b><?= para($buAy) ?></b><span class="up">Gelir-gider →</span></div></a>
-  <a class="stat" href="?durum=borclu"><div class="ic" style="background:var(--amber100)">⏳</div><div><small>Alacak (kalan)</small><b><?= para(max(0, (float)$ozet['alacak'])) ?></b><span class="down">Ödenmemiş tutarlar</span></div></a>
-  <a class="stat" href="servis-kayit.php"><div class="ic">➕</div><div><small>Yeni kayıt</small><b style="font-size:20px">Yeni <?= e(tr_lower($tanim['kayit'])) ?></b><span class="up">Kayıt aç →</span></div></a>
-</div>
-
-<div class="filterbar">
-  <?php foreach (['acik' => 'Açık işler', 'hazir' => 'Teslime hazır', 'teslim' => 'Teslim edilen', 'borclu' => 'Borcu olan', 'tumu' => 'Tümü'] as $k => $ad): ?>
-    <a class="<?= $f === $k ? 'on' : '' ?>" href="?durum=<?= $k ?>"><?= $ad ?></a>
-  <?php endforeach; ?>
-  <form class="fsearch" method="get"><input type="hidden" name="durum" value="tumu"><input class="inp" name="q" placeholder="<?= in_array($sektor, ['arac', 'agir'], true) ? 'Plaka, müşteri, telefon…' : 'Müşteri, iş, telefon, no…' ?>" value="<?= e($ara) ?>"></form>
-</div>
-
 <div class="card">
-  <h2><?= e($tanim['liste']) ?> <a class="btn btn-main" style="color:#fff" href="servis-kayit.php">+ Yeni <?= e(tr_lower($tanim['kayit'])) ?></a></h2>
+  <div class="filtre2">
+    <span class="tarihler"><?php foreach (['bugun' => 'Bugün', 'hafta' => 'Bu hafta', 'ay' => 'Bu ay', 'yil' => 'Bu yıl', 'tumu' => 'Tümü'] as $k => $ad): ?><a class="<?= $donem === $k ? 'on' : '' ?>" href="<?= e($qs(['d' => $k, 'bas' => '', 'bit' => ''])) ?>"><?= $ad ?></a><?php endforeach; ?></span>
+  </div>
+  <form method="get" class="filtre2"><input type="hidden" name="d" value="aralik">
+    <input class="inp" type="date" name="bas" value="<?= e($t0 ?? '') ?>"> – <input class="inp" type="date" name="bit" value="<?= e($t1 ?? '') ?>">
+    <select class="inp" name="etiket"><option value="">Tüm etiketler</option><?php foreach ($etiketler as $et): ?><option <?= $et === $etiket ? 'selected' : '' ?>><?= e($et) ?></option><?php endforeach; ?></select>
+    <select class="inp" name="durum"><option value="">Tüm durumlar</option><?php foreach ($durumlar as $k => [$ad]): ?><option value="<?= $k ?>" <?= $durum === $k ? 'selected' : '' ?>><?= e($ad) ?></option><?php endforeach; ?></select>
+    <label class="chk"><input type="checkbox" name="borclu" value="1" <?= $borclu ? 'checked' : '' ?>> Borcu olanlar</label>
+    <input class="inp grow" name="q" value="<?= e($ara) ?>" placeholder="Kayıt no, müşteri, plaka, telefon…">
+    <button class="btn btn-main">🔍 Filtrele</button>
+    <a class="btn btn-soft" href="<?= e($qs(['csv' => '1'])) ?>">⬇ Excel</a>
+  </form>
   <?php if ($liste): ?><div class="scroll"><table class="tbl">
-    <tr><th>No</th><th><?= e($tanim['kayit']) ?></th><th class="hide-m">Müşteri</th><th class="hide-m">Giriş</th><th>Durum</th><th>Tutar</th><th class="hide-m">Kalan</th></tr>
-    <?php foreach ($liste as $s): $kalan = (float)$s['toplam'] - (float)$s['odenen']; ?>
-      <tr onclick="location='servis-kayit.php?id=<?= $s['id'] ?>'" style="cursor:pointer">
-        <td><b>#<?= (int)$s['no'] ?></b></td>
-        <td><a href="servis-kayit.php?id=<?= $s['id'] ?>"><b><?= e($s['baslik']) ?></b></a><small class="muted" style="display:block"><?= e($s['musteri_ad']) ?></small></td>
-        <td class="hide-m"><?= e($s['musteri_firma'] ?: $s['musteri_ad']) ?><small class="muted" style="display:block"><?= $s['musteri_tel'] ? e(tel_goster($s['musteri_tel'])) : '' ?></small></td>
-        <td class="hide-m"><small><?= date('d.m.Y', strtotime($s['giris_tarihi'])) ?></small></td>
-        <td><?= servis_durum_pill($s['durum']) ?></td>
-        <td><?= para($s['toplam']) ?></td>
-        <td class="hide-m"><?= $kalan > 0.009 && $s['durum'] !== 'iptal' ? '<b class="down">' . para($kalan) . '</b>' : '<span class="up">Ödendi</span>' ?></td>
-      </tr>
+    <tr><th>Kayıt no</th><th>Giriş</th><th class="hide-m">Teslim</th><th>Müşteri</th><th><?= e($tanim['kayit']) ?></th><th>Toplam</th><th class="hide-m">Kalan</th><th class="hide-m">Teknisyen</th><th>Durum</th></tr>
+    <?php foreach ($liste as $r): $k = (float)$r['toplam'] - (float)$r['odenen']; ?>
+      <tr onclick="location='servis-kayit.php?id=<?= $r['id'] ?>'" style="cursor:pointer"><td><b>#<?= (int)$r['no'] ?></b><?= $r['etiket'] ? '<small class="muted" style="display:block">🏷 ' . e($r['etiket']) . '</small>' : '' ?></td>
+        <td><small><?= date('d.m.Y', strtotime($r['giris_tarihi'])) ?></small></td><td class="hide-m"><small><?= $r['teslim_tarihi'] ? date('d.m.Y', strtotime($r['teslim_tarihi'])) : '—' ?></small></td>
+        <td><?= e($r['musteri_ad']) ?></td><td><?= satir_rozet($r) ?></td><td><?= para($r['toplam']) ?></td>
+        <td class="hide-m"><?= $k > 0.009 && $r['durum'] !== 'iptal' ? '<b class="down">' . para($k) . '</b>' : '<span class="up">✓</span>' ?></td>
+        <td class="hide-m"><?= e($r['teknisyen'] ?: '—') ?></td><td><?= servis_durum_pill($r['durum']) ?></td></tr>
     <?php endforeach; ?>
   </table></div>
-  <?php else: ?>
-    <div class="emptybox"><div style="font-size:40px"><?= $tanim['ikon'] ?></div><p><?= $ara !== '' ? 'Aramaya uygun kayıt yok.' : 'Bu listede kayıt yok.' ?></p><a class="btn btn-main" href="servis-kayit.php">+ İlk kaydını aç</a></div>
-  <?php endif; ?>
+  <?php else: ?><div class="emptybox"><div style="font-size:40px">🕘</div><p>Bu filtrelere uygun kayıt yok.</p></div><?php endif; ?>
 </div>
-
-<details class="card">
-  <summary class="cat-sum"><span>⚙️ <b>Servis ayarları</b> <small class="muted">Sektör ve rapor alt notu</small></span><span class="btn btn-soft">Aç</span></summary>
-  <form method="post" class="form one" style="margin-top:14px">
-    <?= csrf_field() ?>
-    <label>Servis türü <small class="muted">(kayıt formundaki alanlar buna göre değişir)</small>
-      <select class="inp" name="servis_sektor">
-        <?php foreach (sektorler() as $k => $t): ?><option value="<?= $k ?>" <?= $k === $sektor ? 'selected' : '' ?>><?= $t['ikon'] . ' ' . e($t['ad']) ?></option><?php endforeach; ?>
-      </select></label>
-    <label>Rapor alt notu <small class="muted">(her raporun altında görünür: garanti şartları, banka/IBAN bilgisi vb.)</small>
-      <textarea class="inp" name="rapor_notu" rows="3" maxlength="1500" placeholder="Örn: Yapılan işçilik 6 ay garantilidir. Değişen parçalar müşteriye teslim edilmiştir."><?= e($u['rapor_notu']) ?></textarea></label>
-    <div><button class="btn btn-main">Kaydet</button></div>
-  </form>
-</details>
 <?php panel_bitir();
